@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charlotte | Artifacts</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #232324;
+  --surface: #2D2B2E;
+  --primary: #7200CB;
+  --primary-light: #AA66E0;
+  --secondary: #F000D2;
+  --tertiary: #21D6C6;
+  --error: #CE4F51;
+  --text-primary: #F2F2F3;
+  --text-secondary: #ECECEC;
+  --text-tertiary: #5B575E;
+  --glass-fill: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.12);
+}
+html, body {
+  height: 100%; background: var(--bg); color: var(--text-primary);
+  font-family: 'Inter', sans-serif; overflow: hidden;
+}
+h1, h2, h3, h4, .label { font-family: 'Oswald', sans-serif; }
+
+/* === AUTH SCREEN === */
+.auth-screen {
+  height: 100vh; display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 32px;
+}
+
+.auth-screen .logo {
+  width: 80px; height: 80px; border-radius: 22px;
+  background: linear-gradient(135deg, var(--secondary), var(--primary), var(--tertiary));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Oswald'; font-weight: 600; font-size: 36px; color: white;
+  box-shadow: 0 0 60px rgba(114,0,203,0.3);
+}
+
+.auth-screen h1 { font-size: 32px; letter-spacing: 3px; font-weight: 500; }
+
+.auth-form {
+  display: flex; gap: 10px; align-items: center;
+}
+
+.auth-form input {
+  background: var(--glass-fill); border: 1px solid var(--glass-border);
+  color: var(--text-primary); padding: 12px 18px; border-radius: 10px;
+  font-family: 'Inter'; font-size: 14px; width: 240px; outline: none;
+  transition: border-color 0.2s ease;
+}
+.auth-form input:focus { border-color: var(--primary-light); }
+.auth-form input::placeholder { color: var(--text-tertiary); }
+
+.auth-form button {
+  background: linear-gradient(135deg, var(--primary), rgba(114,0,203,0.8));
+  border: 1px solid var(--primary-light); color: white;
+  padding: 12px 24px; border-radius: 10px; cursor: pointer;
+  font-family: 'Oswald'; font-size: 14px; letter-spacing: 1px;
+  transition: all 0.2s ease;
+}
+.auth-form button:hover { box-shadow: 0 0 30px rgba(114,0,203,0.4); transform: translateY(-1px); }
+
+.auth-error {
+  color: var(--error); font-size: 13px; height: 20px;
+  font-family: 'Oswald'; letter-spacing: 0.5px;
+}
+
+/* === DASHBOARD === */
+.dashboard {
+  height: 100vh; display: none; flex-direction: column; overflow: hidden;
+}
+.dashboard.visible { display: flex; }
+.auth-screen.hidden { display: none; }
+
+.dash-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 32px;
+  background: rgba(45,43,46,0.80); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.dash-brand { display: flex; align-items: center; gap: 14px; }
+
+.dash-brand .logo-sm {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--secondary), var(--primary), var(--tertiary));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Oswald'; font-weight: 600; font-size: 18px; color: white;
+}
+
+.dash-brand h1 { font-size: 20px; font-weight: 500; letter-spacing: 1px; }
+.dash-brand h1 span { color: var(--text-tertiary); font-weight: 400; font-size: 14px; margin-left: 8px; }
+
+.lock-btn {
+  background: var(--glass-fill); border: 1px solid var(--glass-border);
+  color: var(--text-tertiary); padding: 8px 16px; border-radius: 8px;
+  cursor: pointer; font-family: 'Oswald'; font-size: 12px; letter-spacing: 1px;
+  transition: all 0.2s ease;
+}
+.lock-btn:hover { color: var(--text-primary); border-color: rgba(255,255,255,0.2); }
+
+.dash-body {
+  flex: 1; overflow-y: auto; padding: 32px;
+  display: flex; flex-direction: column; align-items: center;
+}
+
+.dash-body h2 {
+  font-size: 13px; color: var(--text-tertiary); letter-spacing: 3px;
+  text-transform: uppercase; margin-bottom: 24px;
+}
+
+.artifacts-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 18px; width: 100%; max-width: 1100px;
+}
+
+.artifact-card {
+  background: var(--glass-fill); border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 24px; backdrop-filter: blur(16px);
+  transition: all 0.3s ease; cursor: pointer; text-decoration: none;
+  color: inherit; display: flex; flex-direction: column; gap: 12px;
+  position: relative; overflow: hidden;
+}
+.artifact-card:hover {
+  border-color: rgba(255,255,255,0.2); transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+.artifact-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: 14px 14px 0 0; transition: opacity 0.3s ease;
+}
+.artifact-card:hover::before { opacity: 1; }
+
+.artifact-card .card-icon {
+  font-size: 28px; width: 52px; height: 52px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.artifact-card h3 { font-size: 18px; font-weight: 500; }
+.artifact-card .card-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+.artifact-card .card-tag {
+  font-family: 'Oswald'; font-size: 10px; letter-spacing: 1.5px;
+  text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
+  align-self: flex-start;
+}
+
+/* Card themes */
+.artifact-card.simulator::before { background: linear-gradient(90deg, var(--tertiary), var(--primary)); }
+.artifact-card.simulator .card-icon { background: rgba(33,214,198,0.12); }
+.artifact-card.simulator .card-tag { background: rgba(33,214,198,0.15); color: var(--tertiary); border: 1px solid rgba(33,214,198,0.3); }
+
+.artifact-card.hull::before { background: linear-gradient(90deg, var(--primary), var(--secondary)); }
+.artifact-card.hull .card-icon { background: rgba(114,0,203,0.12); }
+.artifact-card.hull .card-tag { background: rgba(114,0,203,0.15); color: var(--primary-light); border: 1px solid rgba(114,0,203,0.3); }
+
+.artifact-card.enterprise::before { background: linear-gradient(90deg, var(--secondary), var(--tertiary)); }
+.artifact-card.enterprise .card-icon { background: rgba(240,0,210,0.12); }
+.artifact-card.enterprise .card-tag { background: rgba(240,0,210,0.15); color: var(--secondary); border: 1px solid rgba(240,0,210,0.3); }
+
+/* Footer */
+.dash-footer {
+  padding: 16px 32px; text-align: center; border-top: 1px solid var(--glass-border);
+  font-size: 11px; color: var(--text-tertiary); font-family: 'Oswald'; letter-spacing: 1px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div class="auth-screen" id="authScreen">
+  <div class="logo">C</div>
+  <h1>CHARLOTTE</h1>
+  <form class="auth-form" onsubmit="authenticate(event)">
+    <input type="password" id="passInput" placeholder="Enter access code" autocomplete="off" autofocus>
+    <button type="submit">ENTER</button>
+  </form>
+  <div class="auth-error" id="authError"></div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <header class="dash-header">
+    <div class="dash-brand">
+      <div class="logo-sm">C</div>
+      <h1>CHARLOTTE <span>Artifact Portal</span></h1>
+    </div>
+    <button class="lock-btn" onclick="lock()">LOCK</button>
+  </header>
+
+  <div class="dash-body">
+    <h2>Presentation Artifacts</h2>
+    <div class="artifacts-grid" id="artifactsGrid"></div>
+  </div>
+
+  <div class="dash-footer">
+    CHARLOTTE &mdash; INFRASTRUCTURE FOR OBSERVABLE REALITY
+  </div>
+</div>
+
+<script>
+// SHA-256 hash of "charlotte"
+const PASS_HASH = '5765e0c0c63e9aabc0e7b6a8e3bee390726e4f03a621ec72ac63dc2e24351755';
+
+const artifacts = [
+  {
+    title: 'Predictive Distribution Simulator',
+    desc: 'Interactive 12-month simulation showing Charlotte detecting equipment signal drift across ISG\'s fleet and generating proactive service quotes before failure.',
+    url: '/predictive-distribution-simulator/',
+    icon: '⚡',
+    tag: 'LIVE DEMO',
+    cls: 'simulator'
+  },
+  {
+    title: 'The Convex Hull',
+    desc: 'Four radically different domains — humans, animals, machines, cultural artifacts — all converging on the same five primitives. Click each domain to explore.',
+    url: '/predictive-distribution-simulator/convex-hull.html',
+    icon: '◈',
+    tag: 'ARCHITECTURE',
+    cls: 'hull'
+  },
+  {
+    title: 'Enterprise Integration',
+    desc: 'System design showing how Charlotte plugs into enterprise data sources and produces intelligence outputs. Hover each component for details.',
+    url: '/predictive-distribution-simulator/enterprise-integration.html',
+    icon: '⬡',
+    tag: 'SYSTEM DESIGN',
+    cls: 'enterprise'
+  },
+];
+
+// ============================================================
+// AUTH
+// ============================================================
+async function sha256(message) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function authenticate(e) {
+  e.preventDefault();
+  const input = document.getElementById('passInput').value;
+  const hash = await sha256(input);
+
+  if (hash === PASS_HASH) {
+    sessionStorage.setItem('charlotte_auth', 'true');
+    showDashboard();
+  } else {
+    document.getElementById('authError').textContent = 'Invalid access code';
+    document.getElementById('passInput').value = '';
+    document.getElementById('passInput').focus();
+  }
+}
+
+function lock() {
+  sessionStorage.removeItem('charlotte_auth');
+  document.getElementById('dashboard').classList.remove('visible');
+  document.getElementById('authScreen').classList.remove('hidden');
+  document.getElementById('passInput').value = '';
+  document.getElementById('passInput').focus();
+}
+
+function showDashboard() {
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('dashboard').classList.add('visible');
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderArtifacts() {
+  const grid = document.getElementById('artifactsGrid');
+  artifacts.forEach(a => {
+    const card = document.createElement('a');
+    card.className = `artifact-card ${a.cls}`;
+    card.href = a.url;
+    card.target = '_blank';
+    card.innerHTML = `
+      <div class="card-icon">${a.icon}</div>
+      <h3>${a.title}</h3>
+      <div class="card-desc">${a.desc}</div>
+      <div class="card-tag">${a.tag}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderArtifacts();
+
+if (sessionStorage.getItem('charlotte_auth') === 'true') {
+  showDashboard();
+}
+</script>
+</body>
+</html>
