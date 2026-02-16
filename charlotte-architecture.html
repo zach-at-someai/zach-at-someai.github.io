@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charlotte | Architecture Reference</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #232324;
+  --surface: #2D2B2E;
+  --primary: #7200CB;
+  --primary-light: #AA66E0;
+  --secondary: #F000D2;
+  --tertiary: #21D6C6;
+  --error: #CE4F51;
+  --text-primary: #F2F2F3;
+  --text-secondary: #ECECEC;
+  --text-tertiary: #5B575E;
+  --glass-fill: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.12);
+}
+html, body {
+  min-height: 100%; background: var(--bg); color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+}
+h1, h2, h3, h4, .label { font-family: 'Oswald', sans-serif; }
+
+/* Header */
+.doc-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 32px;
+  background: rgba(45,43,46,0.80); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  position: sticky; top: 0; z-index: 100;
+}
+.doc-brand { display: flex; align-items: center; gap: 14px; }
+.doc-brand .logo-sm {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--secondary), var(--primary), var(--tertiary));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Oswald'; font-weight: 600; font-size: 18px; color: white;
+}
+.doc-brand h1 { font-size: 20px; font-weight: 500; letter-spacing: 1px; }
+.doc-brand h1 span { color: var(--text-tertiary); font-weight: 400; font-size: 14px; margin-left: 8px; }
+
+.back-btn {
+  background: var(--glass-fill); border: 1px solid var(--glass-border);
+  color: var(--text-tertiary); padding: 8px 16px; border-radius: 8px;
+  cursor: pointer; font-family: 'Oswald'; font-size: 12px; letter-spacing: 1px;
+  transition: all 0.2s ease; text-decoration: none;
+}
+.back-btn:hover { color: var(--text-primary); border-color: rgba(255,255,255,0.2); }
+
+/* Content */
+.doc-body {
+  max-width: 900px; margin: 0 auto; padding: 48px 32px 96px;
+}
+
+.doc-body h2 {
+  font-size: 28px; font-weight: 600; margin-top: 56px; margin-bottom: 16px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--glass-border);
+  letter-spacing: 1px;
+}
+.doc-body h2:first-child { margin-top: 0; }
+
+.doc-body h3 {
+  font-size: 18px; font-weight: 500; margin-top: 36px; margin-bottom: 12px;
+  color: var(--primary-light); letter-spacing: 0.5px;
+}
+
+.doc-body p {
+  font-size: 14px; line-height: 1.8; color: var(--text-secondary); margin-bottom: 16px;
+}
+
+.doc-body strong { color: var(--text-primary); }
+
+.doc-body ul, .doc-body ol {
+  margin: 12px 0 20px 24px; font-size: 14px; line-height: 1.8; color: var(--text-secondary);
+}
+.doc-body li { margin-bottom: 6px; }
+
+.doc-body blockquote {
+  border-left: 3px solid var(--primary); padding: 16px 24px; margin: 24px 0;
+  background: var(--glass-fill); border-radius: 0 10px 10px 0;
+  font-size: 15px; line-height: 1.7; color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Code blocks */
+.code-block {
+  background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
+  border-radius: 10px; padding: 20px 24px; margin: 16px 0 24px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 13px; line-height: 1.7; overflow-x: auto;
+  color: var(--text-secondary);
+}
+.code-block .key { color: var(--tertiary); }
+.code-block .type { color: var(--secondary); }
+.code-block .val { color: var(--primary-light); }
+.code-block .comment { color: var(--text-tertiary); font-style: italic; }
+
+code {
+  background: rgba(0,0,0,0.3); padding: 2px 8px; border-radius: 4px;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 12px; color: var(--tertiary);
+}
+
+/* Tables */
+.doc-table {
+  width: 100%; border-collapse: collapse; margin: 16px 0 24px;
+  font-size: 13px;
+}
+.doc-table th {
+  text-align: left; padding: 12px 16px;
+  background: rgba(114,0,203,0.15); color: var(--primary-light);
+  font-family: 'Oswald'; font-weight: 500; letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--glass-border);
+}
+.doc-table td {
+  padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text-secondary); line-height: 1.6;
+}
+.doc-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Info cards */
+.info-card {
+  background: var(--glass-fill); border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 24px; margin: 24px 0;
+  backdrop-filter: blur(16px);
+}
+.info-card h4 {
+  font-size: 14px; letter-spacing: 1px; margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.info-card.kernel h4 { color: var(--tertiary); }
+.info-card.domain h4 { color: var(--secondary); }
+.info-card.frame h4 { color: var(--primary-light); }
+
+/* Diagram */
+.diagram {
+  background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
+  border-radius: 10px; padding: 32px; margin: 24px 0;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 13px; line-height: 1.6; text-align: center;
+  color: var(--text-secondary); overflow-x: auto; white-space: pre;
+}
+
+/* TOC */
+.toc {
+  background: var(--glass-fill); border: 1px solid var(--glass-border);
+  border-radius: 14px; padding: 24px 32px; margin: 32px 0;
+}
+.toc h3 { margin-top: 0; color: var(--text-tertiary); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; }
+.toc ol { margin: 16px 0 0 20px; }
+.toc a { color: var(--primary-light); text-decoration: none; transition: color 0.2s; }
+.toc a:hover { color: var(--text-primary); }
+
+/* Footer */
+.doc-footer {
+  padding: 16px 32px; text-align: center; border-top: 1px solid var(--glass-border);
+  font-size: 11px; color: var(--text-tertiary); font-family: 'Oswald'; letter-spacing: 1px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header class="doc-header">
+  <div class="doc-brand">
+    <div class="logo-sm">C</div>
+    <h1>CHARLOTTE <span>Architecture Reference</span></h1>
+  </div>
+  <a href="/" class="back-btn">PORTAL</a>
+</header>
+
+<div class="doc-body">
+
+  <blockquote>A knowledge graph encoded as a memory stack. Everything is a FACT.</blockquote>
+
+  <div class="toc">
+    <h3>Contents</h3>
+    <ol>
+      <li><a href="#kernel">The Kernel &mdash; Five Primitives</a></li>
+      <li><a href="#registers">Register Architecture (P0&ndash;P3)</a></li>
+      <li><a href="#krf">KRF Files &mdash; Knowledge Representation Format</a></li>
+      <li><a href="#layers">Graph Layer vs Feature Layer</a></li>
+      <li><a href="#time">Time As Graph</a></li>
+      <li><a href="#space">Space As Graph</a></li>
+      <li><a href="#chat">Chat As Graph</a></li>
+      <li><a href="#protocols">Protocols &mdash; Signal Forecasting</a></li>
+      <li><a href="#frames">Frames &mdash; Assembled Views</a></li>
+      <li><a href="#isg">ISG Application</a></li>
+    </ol>
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="kernel">1. The Kernel &mdash; Five Primitives</h2>
+
+  <p>Charlotte stores all data in a single Firestore collection called <code>facts</code>. There are no separate collections for nodes, edges, signals, metrics, or protocols. Every piece of information is a <strong>FACT</strong> document with a register-based structure, similar to CPU instructions or opcodes.</p>
+
+  <div class="info-card kernel">
+    <h4>Core Design Guarantees</h4>
+    <ul>
+      <li><strong>Clean exports</strong> &mdash; dump one collection, get everything</li>
+      <li><strong>Consistent structure</strong> &mdash; every document follows the same pattern</li>
+      <li><strong>No collection sprawl</strong> &mdash; no ad-hoc collections for new features</li>
+      <li><strong>Transactional integrity</strong> &mdash; all CRUD operations adjust a single stack</li>
+    </ul>
+  </div>
+
+  <table class="doc-table">
+    <thead>
+      <tr><th>Primitive</th><th>Purpose</th><th>Definition</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>NODE</strong></td><td>Identity</td><td>An observable entity that persists through time</td></tr>
+      <tr><td><strong>EDGE</strong></td><td>Relationship</td><td>A typed connection between two nodes</td></tr>
+      <tr><td><strong>METRIC</strong></td><td>Measure</td><td>A quantifiable dimension observed along</td></tr>
+      <tr><td><strong>SIGNAL</strong></td><td>Event</td><td>A timestamped observation emitted on a metric</td></tr>
+      <tr><td><strong>PROTOCOL</strong></td><td>Rule</td><td>A constraint governing signal propagation</td></tr>
+    </tbody>
+  </table>
+
+  <p>These five primitives form the <strong>universal kernel</strong>. Every business that runs on Charlotte &mdash; swine genetics, industrial equipment, rare instruments, moving logistics &mdash; uses the same five types. Domain specificity comes from vocabulary (node categories, edge types, metric names), never from structural changes.</p>
+
+  <!-- ============================================================ -->
+  <h2 id="registers">2. Register Architecture (P0&ndash;P3)</h2>
+
+  <p>Each FACT is a small document with <strong>positional registers</strong>. Think of it as an instruction in a virtual machine:</p>
+
+  <div class="code-block">
+{
+  <span class="key">":ID"</span>:      <span class="val">"unique-identifier"</span>,
+  <span class="key">":TYPE"</span>:    <span class="type">"NODE | EDGE | METRIC | SIGNAL | PROTOCOL"</span>,
+  <span class="key">":CREATED"</span>: <span class="val">"DATE:M-d-yyyy"</span>,
+  <span class="key">"P0"</span>:       <span class="comment">"primary register"</span>,
+  <span class="key">"P1"</span>:       <span class="comment">"secondary register"</span>,
+  <span class="key">"P2"</span>:       <span class="comment">"tertiary register"</span>,
+  <span class="key">"P3"</span>:       <span class="comment">"quaternary register"</span>
+}
+  </div>
+
+  <h3>Core Registers (All FACTs)</h3>
+  <ul>
+    <li><code>:ID</code> &mdash; Unique identifier</li>
+    <li><code>:TYPE</code> &mdash; One of the five types</li>
+    <li><code>:CREATED</code> &mdash; Temporal node reference (a node ID like <code>DATE:1-30-2026</code>, NOT a timestamp)</li>
+  </ul>
+
+  <h3>Positional Registers By Type</h3>
+
+  <table class="doc-table">
+    <thead>
+      <tr><th>Type</th><th>P0</th><th>P1</th><th>P2</th><th>P3</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>NODE</strong></td><td>category</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+      <tr><td><strong>EDGE</strong></td><td>from node</td><td>to node</td><td>relationship type</td><td>&mdash;</td></tr>
+      <tr><td><strong>METRIC</strong></td><td>which node</td><td>value type</td><td>label</td><td>constraints</td></tr>
+      <tr><td><strong>SIGNAL</strong></td><td>which node</td><td>which metric</td><td>the value</td><td>protocol (optional)</td></tr>
+      <tr><td><strong>PROTOCOL</strong></td><td>which node</td><td>schedule</td><td>requirements</td><td>&mdash;</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>P0 always answers "what is this about?"</strong> For a NODE, it's the category. For everything else, it's the node it belongs to. Any query starting from "show me everything about this entity" filters on P0.</p>
+
+  <h3>Colon Grammar</h3>
+  <ul>
+    <li><code>:</code> &mdash; framework fields (<code>:ID</code>, <code>:TYPE</code>, <code>:CREATED</code>)</li>
+    <li><code>::</code> &mdash; attributes (<code>::LABEL</code>, <code>::VALUE</code>, <code>::CATEGORIES</code>)</li>
+    <li><code>:::</code> &mdash; relationships (<code>:::NODE</code>, <code>:::FROM</code>, <code>:::TO</code>)</li>
+  </ul>
+
+  <!-- ============================================================ -->
+  <h2 id="krf">3. KRF Files &mdash; Knowledge Representation Format</h2>
+
+  <p><strong>KRF (Knowledge Representation Format)</strong> files are the compilation output of Charlotte's architecture. They encode a business's ontology and taxonomy as first-order logic fact stacks using the five primitives.</p>
+
+  <div class="info-card domain">
+    <h4>What KRF Encodes</h4>
+    <ul>
+      <li><strong>Ontology</strong> &mdash; what types of things exist and how they relate (NODE categories, EDGE types, METRIC definitions)</li>
+      <li><strong>Taxonomy</strong> &mdash; the hierarchical classification within those types (a COMPRESSOR is equipment, a GA-75 is a model, unit-4821 is an instance)</li>
+      <li><strong>Temporal structures</strong> &mdash; date nodes, granularity lanes, compass directions</li>
+      <li><strong>Spatial structures</strong> &mdash; geographic nodes, directional edges, convex hulls</li>
+      <li><strong>Domain rules</strong> &mdash; protocols, constraints, signal propagation logic</li>
+    </ul>
+  </div>
+
+  <p>When Jack says Charlotte "compiles an OS" for a business, the KRF is the compiled output &mdash; the business's reality, formalized into a graph that Charlotte can boot and run.</p>
+
+  <h3>KRF In Production</h3>
+
+  <table class="doc-table">
+    <thead>
+      <tr><th>KRF Stack</th><th>What It Encodes</th><th>Scale</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Temporal Spine</strong></td><td>15 granularity lanes from Millennium to Hour, 4 compass directions</td><td>22.6M nodes, 1,123 lines KRF</td></tr>
+      <tr><td><strong>Spatial Substrate</strong></td><td>51 US states, directional edges, convex hulls, centroids</td><td>1,275 edges, 4,604 lines KRF</td></tr>
+      <tr><td><strong>Charlotte OS Kernel</strong></td><td>Full operating system definition in first-order logic</td><td>31 KRF fact stacks</td></tr>
+      <tr><td><strong>Business Model</strong></td><td>Revenue model as NODEs, EDGEs, METRICs, PROTOCOLs</td><td>Separate file</td></tr>
+      <tr><td><strong>Sounder (Swine)</strong></td><td>Swine genetics domain &mdash; sows, boars, litters, breeding protocols</td><td>401K KRF facts</td></tr>
+    </tbody>
+  </table>
+
+  <h3>KRF As Ingestion Pipeline</h3>
+
+  <p>For any new business domain, the process is:</p>
+  <ol>
+    <li><strong>Define the domain KRF</strong> &mdash; node categories, edge types, metric definitions, protocols. This is the business's "OS" compiled from Charlotte's kernel.</li>
+    <li><strong>Transform raw data into KRF fact stacks</strong> &mdash; ERP exports, transaction logs, and operational data get converted into KRF files. The KRF format is the intermediate representation between messy source data and the graph.</li>
+    <li><strong>Load KRF into Firestore</strong> &mdash; the fact stacks get written to the <code>facts</code> collection. This step is mechanical &mdash; the format is already structured as FACTs.</li>
+  </ol>
+
+  <p>The same kernel compiles different KRF stacks for different businesses. A swine breeder's KRF and an industrial equipment company's KRF look completely different in vocabulary but are structurally identical.</p>
+
+  <!-- ============================================================ -->
+  <h2 id="layers">4. Graph Layer vs Feature Layer</h2>
+
+  <h3>Graph Layer (Explicit Connections)</h3>
+  <p><strong>NODE</strong> and <strong>EDGE</strong> form the explicit graph structure. EDGEs only connect NODEs to NODEs. This is the topological structure of the knowledge graph.</p>
+
+  <div class="diagram">NODE &lt;&mdash;&mdash; EDGE &mdash;&mdash;&gt; NODE</div>
+
+  <h3>Feature Layer (Implicit Connections)</h3>
+  <p><strong>METRIC</strong> and <strong>SIGNAL</strong> sit "on top of" nodes without requiring EDGEs:</p>
+
+  <div class="diagram">NODE &larr; METRIC    <span class="comment">(metric's P0 points to node)</span>
+NODE &larr; SIGNAL &rarr; METRIC    <span class="comment">(signal's P0 &rarr; node, P1 &rarr; metric)</span></div>
+
+  <p>This allows any node to accumulate a <strong>feature vector</strong> &mdash; arbitrary metrics producing signals over time. Each node becomes a point in feature space defined by its signal history.</p>
+
+  <div class="info-card kernel">
+    <h4>Why No EDGEs For Metrics/Signals?</h4>
+    <ul>
+      <li>Keeps the graph layer clean (only entity relationships)</li>
+      <li>The connection is structural, not relational</li>
+      <li>Enables feature engineering without graph pollution</li>
+    </ul>
+  </div>
+
+  <h3>Attributes Are Signals</h3>
+
+  <p><strong>There are no "fields" on nodes.</strong> Everything is a signal. A node's name, weight, status &mdash; all are SIGNALs pointing at METRICs. This means all attributes have history, type definitions, and are queryable the same way.</p>
+
+  <div class="code-block">
+<span class="comment">// A sow's name</span>
+{<span class="key">":ID"</span>: <span class="val">"SIG:1"</span>, <span class="key">":TYPE"</span>: <span class="type">"SIGNAL"</span>, <span class="key">"P0"</span>: <span class="val">"SOW:bella"</span>, <span class="key">"P1"</span>: <span class="val">"METRIC:name"</span>, <span class="key">"P2"</span>: <span class="val">"Bella"</span>}
+
+<span class="comment">// A sow's weight on Jan 30</span>
+{<span class="key">":ID"</span>: <span class="val">"SIG:2"</span>, <span class="key">":TYPE"</span>: <span class="type">"SIGNAL"</span>, <span class="key">"P0"</span>: <span class="val">"SOW:bella"</span>, <span class="key">"P1"</span>: <span class="val">"METRIC:weight"</span>, <span class="key">"P2"</span>: <span class="val">285</span>}
+
+<span class="comment">// Weight updated on Feb 15 (append-only, never overwrite)</span>
+{<span class="key">":ID"</span>: <span class="val">"SIG:3"</span>, <span class="key">":TYPE"</span>: <span class="type">"SIGNAL"</span>, <span class="key">"P0"</span>: <span class="val">"SOW:bella"</span>, <span class="key">"P1"</span>: <span class="val">"METRIC:weight"</span>, <span class="key">"P2"</span>: <span class="val">290</span>}
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="time">5. Time As Graph</h2>
+
+  <p>Time is not stored as timestamps on documents. <strong>Time is a layer of pre-built nodes.</strong></p>
+
+  <h3>DATE Nodes</h3>
+  <p>Format: <code>DATE:M-d-yyyy</code></p>
+  <div class="code-block">
+{<span class="key">":ID"</span>: <span class="val">"DATE:1-30-2026"</span>, <span class="key">":TYPE"</span>: <span class="type">"NODE"</span>, <span class="key">"P0"</span>: <span class="val">"DATE"</span>}
+  </div>
+
+  <h3>Temporal Spine (Double-Linked List)</h3>
+  <p>DATE nodes are linked by NEXT edges, forming a traversable timeline:</p>
+  <div class="code-block">
+{<span class="key">":TYPE"</span>: <span class="type">"EDGE"</span>, <span class="key">"P0"</span>: <span class="val">"DATE:1-29-2026"</span>, <span class="key">"P1"</span>: <span class="val">"DATE:1-30-2026"</span>, <span class="key">"P2"</span>: <span class="val">"NEXT"</span>}
+{<span class="key">":TYPE"</span>: <span class="type">"EDGE"</span>, <span class="key">"P0"</span>: <span class="val">"DATE:1-30-2026"</span>, <span class="key">"P1"</span>: <span class="val">"DATE:1-31-2026"</span>, <span class="key">"P2"</span>: <span class="val">"NEXT"</span>}
+  </div>
+
+  <h3>Temporal Event Edges</h3>
+  <p>When something happens at a time, create an EDGE to the DATE node:</p>
+  <div class="code-block">
+<span class="comment">// A litter was born on Jan 30</span>
+{<span class="key">"P0"</span>: <span class="val">"LITTER:ruby_jan26"</span>, <span class="key">"P1"</span>: <span class="val">"DATE:1-30-2026"</span>, <span class="key">"P2"</span>: <span class="val">"BORN_ON"</span>}
+
+<span class="comment">// A mating is due on Apr 25</span>
+{<span class="key">"P0"</span>: <span class="val">"MATING:bella_jan"</span>, <span class="key">"P1"</span>: <span class="val">"DATE:4-25-2026"</span>, <span class="key">"P2"</span>: <span class="val">"DUE_ON"</span>}
+  </div>
+
+  <p>The temporal spine spans <strong>15 granularity lanes</strong> from Millennium to Hour &mdash; 22.6 million pre-built nodes with 4 compass directions, encoded in 1,123 lines of KRF.</p>
+
+  <!-- ============================================================ -->
+  <h2 id="space">6. Space As Graph</h2>
+
+  <p>Geographic locations are constant node layers, pre-built and shared:</p>
+
+  <div class="code-block">
+{<span class="key">":ID"</span>: <span class="val">"COUNTRY:USA"</span>,       <span class="key">":TYPE"</span>: <span class="type">"NODE"</span>, <span class="key">"P0"</span>: <span class="val">"COUNTRY"</span>}
+{<span class="key">":ID"</span>: <span class="val">"STATE:TX"</span>,          <span class="key">":TYPE"</span>: <span class="type">"NODE"</span>, <span class="key">"P0"</span>: <span class="val">"STATE"</span>}
+{<span class="key">":ID"</span>: <span class="val">"CITY:HOUSTON_TX"</span>,   <span class="key">":TYPE"</span>: <span class="type">"NODE"</span>, <span class="key">"P0"</span>: <span class="val">"CITY"</span>}
+
+<span class="comment">// Spatial hierarchy</span>
+{<span class="key">"P0"</span>: <span class="val">"STATE:TX"</span>,        <span class="key">"P1"</span>: <span class="val">"COUNTRY:USA"</span>,     <span class="key">"P2"</span>: <span class="val">"LOCATED_IN"</span>}
+{<span class="key">"P0"</span>: <span class="val">"CITY:HOUSTON_TX"</span>, <span class="key">"P1"</span>: <span class="val">"STATE:TX"</span>,        <span class="key">"P2"</span>: <span class="val">"LOCATED_IN"</span>}
+  </div>
+
+  <p>When a node is "located" somewhere, it gets an EDGE to the spatial layer:</p>
+
+  <div class="code-block">
+{<span class="key">"P0"</span>: <span class="val">"BRANCH:tps-houston"</span>, <span class="key">"P1"</span>: <span class="val">"CITY:HOUSTON_TX"</span>, <span class="key">"P2"</span>: <span class="val">"LOCATED_IN"</span>}
+  </div>
+
+  <p>The spatial substrate covers <strong>51 US state nodes</strong> with 1,275 directional edges, convex hulls, and centroids &mdash; encoded in 4,604 lines of KRF.</p>
+
+  <!-- ============================================================ -->
+  <h2 id="chat">7. Chat As Graph</h2>
+
+  <p>Chats and messages are not special constructs. <strong>They are nodes.</strong></p>
+
+  <div class="code-block">
+<span class="comment">// Chat and message nodes</span>
+{<span class="key">":ID"</span>: <span class="val">"CHAT:main"</span>, <span class="key">":TYPE"</span>: <span class="type">"NODE"</span>, <span class="key">"P0"</span>: <span class="val">"CHAT"</span>}
+{<span class="key">":ID"</span>: <span class="val">"MSG:1"</span>,     <span class="key">":TYPE"</span>: <span class="type">"NODE"</span>, <span class="key">"P0"</span>: <span class="val">"MESSAGE"</span>}
+{<span class="key">":ID"</span>: <span class="val">"MSG:2"</span>,     <span class="key">":TYPE"</span>: <span class="type">"NODE"</span>, <span class="key">"P0"</span>: <span class="val">"MESSAGE"</span>}
+
+<span class="comment">// Message belongs to chat</span>
+{<span class="key">"P0"</span>: <span class="val">"MSG:1"</span>, <span class="key">"P1"</span>: <span class="val">"CHAT:main"</span>, <span class="key">"P2"</span>: <span class="val">"BELONGS_TO"</span>}
+
+<span class="comment">// Message sequence</span>
+{<span class="key">"P0"</span>: <span class="val">"MSG:1"</span>, <span class="key">"P1"</span>: <span class="val">"MSG:2"</span>, <span class="key">"P2"</span>: <span class="val">"NEXT"</span>}
+
+<span class="comment">// Message content is a signal</span>
+{<span class="key">":TYPE"</span>: <span class="type">"SIGNAL"</span>, <span class="key">"P0"</span>: <span class="val">"MSG:1"</span>, <span class="key">"P1"</span>: <span class="val">"METRIC:name"</span>,
+ <span class="key">"P2"</span>: <span class="val">"Ruby farrowed this morning - 11 alive, 1 stillborn"</span>}
+
+<span class="comment">// Message references another node in the graph</span>
+{<span class="key">"P0"</span>: <span class="val">"MSG:1"</span>, <span class="key">"P1"</span>: <span class="val">"LITTER:ruby_jan26"</span>, <span class="key">"P2"</span>: <span class="val">"REFERENCES"</span>}
+  </div>
+
+  <p>Agent messages aren't just text &mdash; they're woven into the knowledge graph. When an agent responds, the message is a NODE, its content is a SIGNAL, and it can REFERENCE other nodes. <strong>The conversation IS the graph.</strong></p>
+
+  <!-- ============================================================ -->
+  <h2 id="protocols">8. Protocols &mdash; Signal Forecasting</h2>
+
+  <p>PROTOCOLs provide on-the-fly signal forecasts for K metrics on a node. When a user needs to course-correct a metric (e.g., hit a target weight by a show date), the agent creates a PROTOCOL that defines the target, sets checkpoints, proposes new metrics to track, and generates signals that reference back to the protocol.</p>
+
+  <div class="code-block">
+{
+  <span class="key">":ID"</span>:   <span class="val">"PROTOCOL:ruby1_weight"</span>,
+  <span class="key">":TYPE"</span>: <span class="type">"PROTOCOL"</span>,
+  <span class="key">"P0"</span>:    <span class="val">"PIGLET:ruby_1"</span>,
+  <span class="key">"P1"</span>: {
+    <span class="key">"type"</span>: <span class="val">"COURSE_CORRECTION"</span>,
+    <span class="key">"metric"</span>: <span class="val">"METRIC:weight"</span>,
+    <span class="key">"current"</span>: <span class="val">3.2</span>,
+    <span class="key">"target"</span>: <span class="val">260</span>,
+    <span class="key">"target_date"</span>: <span class="val">"DATE:6-15-2026"</span>,
+    <span class="key">"checkpoints"</span>: [
+      {<span class="key">"date"</span>: <span class="val">"DATE:2-15-2026"</span>, <span class="key">"target"</span>: <span class="val">25</span>},
+      {<span class="key">"date"</span>: <span class="val">"DATE:3-15-2026"</span>, <span class="key">"target"</span>: <span class="val">75</span>},
+      {<span class="key">"date"</span>: <span class="val">"DATE:4-15-2026"</span>, <span class="key">"target"</span>: <span class="val">140</span>},
+      {<span class="key">"date"</span>: <span class="val">"DATE:5-15-2026"</span>, <span class="key">"target"</span>: <span class="val">205</span>}
+    ]
+  },
+  <span class="key">"P2"</span>: {
+    <span class="key">"proposed_metrics"</span>: [<span class="val">"METRIC:daily_feed"</span>, <span class="val">"METRIC:adg"</span>],
+    <span class="key">"actions_if_behind"</span>: [<span class="val">"increase_feed"</span>, <span class="val">"check_health"</span>]
+  }
+}
+  </div>
+
+  <p>Signals generated under a protocol reference it in P3:</p>
+
+  <div class="code-block">
+{<span class="key">":TYPE"</span>: <span class="type">"SIGNAL"</span>, <span class="key">"P0"</span>: <span class="val">"PIGLET:ruby_1"</span>, <span class="key">"P1"</span>: <span class="val">"METRIC:weight"</span>, <span class="key">"P2"</span>: <span class="val">8.1</span>, <span class="key">"P3"</span>: <span class="val">"PROTOCOL:ruby1_weight"</span>}
+  </div>
+
+  <!-- ============================================================ -->
+  <h2 id="frames">9. Frames &mdash; Assembled Views</h2>
+
+  <p>A <strong>frame</strong> is the assembled view you get when you query across multiple FACTs &mdash; the stitched-together picture of a node and all its related data. No single FACT tells you everything about an entity. The frame is the middleware that pulls the thread on a node and assembles everything around it into something usable.</p>
+
+  <div class="info-card frame">
+    <h4>What A Frame Contains</h4>
+    <ul>
+      <li><strong>The NODE itself</strong> &mdash; identity and category</li>
+      <li><strong>Its EDGEs</strong> &mdash; what it's connected to (installed at, owned by, instance of)</li>
+      <li><strong>Its METRICs</strong> &mdash; what can be measured on it</li>
+      <li><strong>Its SIGNALs</strong> &mdash; the actual readings over time</li>
+      <li><strong>Its PROTOCOLs</strong> &mdash; what should be happening (maintenance schedules, alert thresholds)</li>
+    </ul>
+  </div>
+
+  <p>Every view in Charlotte is a frame with different scope and presentation:</p>
+
+  <table class="doc-table">
+    <thead>
+      <tr><th>View</th><th>Frame Scope</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Graph</strong></td><td>NODE and EDGE facts visualized</td></tr>
+      <tr><td><strong>Calendar</strong></td><td>Facts with edges to DATE nodes in range</td></tr>
+      <tr><td><strong>Timeline</strong></td><td>Facts ordered by :CREATED temporal references</td></tr>
+      <tr><td><strong>Chat</strong></td><td>MESSAGE nodes filtered, laid out as conversation</td></tr>
+      <tr><td><strong>Node Detail</strong></td><td>Single node + its immediate neighborhood</td></tr>
+    </tbody>
+  </table>
+
+  <p>All the same graph. Different camera angles. Different layout constraints. Different filters. The data never changes &mdash; only what you stitch together and how you present it.</p>
+
+  <p>In the architecture, frames sit in the <strong>repository layer</strong> &mdash; between raw Firestore queries and the screens. The repo pulls FACTs, the frame assembles them into a coherent object, and the screen renders it.</p>
+
+  <div class="diagram">Firestore (raw FACTs)  &rarr;  Repository (queries)  &rarr;  Frame (assembly)  &rarr;  Screen (render)</div>
+
+  <!-- ============================================================ -->
+  <h2 id="isg">10. ISG Application</h2>
+
+  <p>ISG manages <strong>16+ brands</strong> across industrial service, distribution, and field operations with 80,000+ employees. Charlotte provides the intelligence layer by mapping ISG's entire operation into the five primitives.</p>
+
+  <h3>ISG Node Categories</h3>
+
+  <table class="doc-table">
+    <thead>
+      <tr><th>Category</th><th>Examples</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>COMPRESSOR</strong></td><td>Individual equipment units tracked across facilities</td></tr>
+      <tr><td><strong>PART</strong></td><td>Valve assemblies, bearings, filters &mdash; with interchangeability edges</td></tr>
+      <tr><td><strong>MODEL</strong></td><td>Atlas Copco GA-75, Ingersoll Rand R-Series</td></tr>
+      <tr><td><strong>MANUFACTURER</strong></td><td>Atlas Copco, Ingersoll Rand, Sullair</td></tr>
+      <tr><td><strong>BRAND</strong></td><td>ISG's 16+ operating brands</td></tr>
+      <tr><td><strong>BRANCH</strong></td><td>42+ physical locations across the portfolio</td></tr>
+      <tr><td><strong>TECHNICIAN</strong></td><td>Service technicians with institutional knowledge</td></tr>
+      <tr><td><strong>CUSTOMER</strong></td><td>Industrial facilities purchasing parts and service</td></tr>
+      <tr><td><strong>ORDER</strong></td><td>Purchase orders &mdash; nodes, not just records</td></tr>
+      <tr><td><strong>SERVICE_EVENT</strong></td><td>Service calls &mdash; connected to equipment, techs, dates</td></tr>
+      <tr><td><strong>QUOTE</strong></td><td>Proactive and reactive quotes linked to equipment signals</td></tr>
+    </tbody>
+  </table>
+
+  <h3>ISG Edge Types</h3>
+
+  <table class="doc-table">
+    <thead>
+      <tr><th>Edge Type</th><th>Connects</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>INSTALLED_AT</code></td><td>Compressor &rarr; Facility</td></tr>
+      <tr><td><code>INSTANCE_OF</code></td><td>Compressor &rarr; Model</td></tr>
+      <tr><td><code>MADE_BY</code></td><td>Model &rarr; Manufacturer</td></tr>
+      <tr><td><code>COMPATIBLE_WITH</code></td><td>Part &rarr; Model</td></tr>
+      <tr><td><code>INTERCHANGEABLE_WITH</code></td><td>Part &rarr; Part (the taxonomy moat)</td></tr>
+      <tr><td><code>BELONGS_TO</code></td><td>Branch &rarr; Brand</td></tr>
+      <tr><td><code>WORKS_AT</code></td><td>Technician &rarr; Branch</td></tr>
+      <tr><td><code>SOLD_TO</code></td><td>Order &rarr; Customer</td></tr>
+      <tr><td><code>FULFILLED_BY</code></td><td>Order &rarr; Branch</td></tr>
+      <tr><td><code>SERVICED</code></td><td>Service Event &rarr; Compressor</td></tr>
+      <tr><td><code>PERFORMED_BY</code></td><td>Service Event &rarr; Technician</td></tr>
+    </tbody>
+  </table>
+
+  <h3>ISG KRF Ingestion Pipeline</h3>
+  <ol>
+    <li><strong>Define the ISG domain KRF</strong> &mdash; node categories, edge types, metric definitions, and protocols specific to industrial service and distribution</li>
+    <li><strong>Build brand adapters</strong> &mdash; each of the 16+ brands likely has a different ERP. Each adapter transforms that brand's data format into a normalized intermediate, then into KRF fact stacks</li>
+    <li><strong>Backfill historical signals</strong> &mdash; every past PO, service record, and inventory snapshot becomes a SIGNAL with its original date</li>
+    <li><strong>Connect live streams</strong> &mdash; ongoing ERP transactions and (if available) IoT sensor data flow as real-time signals</li>
+    <li><strong>Generate protocols</strong> &mdash; once signal density is sufficient, begin generating maintenance schedules, reorder triggers, and proactive quote triggers</li>
+  </ol>
+
+  <h3>The Compressor Taxonomy Moat</h3>
+  <p>The <code>INTERCHANGEABLE_WITH</code> edge type is where ISG builds a competitive moat that no competitor can replicate. Every service event, every part sold, every technician note becomes a signal in the graph. Over time, ISG owns the most comprehensive compressor knowledge base in the industry &mdash; and because signals are append-only, history cannot be reconstructed by a competitor who starts later.</p>
+
+  <h3>ISG Protocols</h3>
+  <div class="code-block">
+<span class="comment">// Predictive maintenance protocol</span>
+{
+  <span class="key">":TYPE"</span>: <span class="type">"PROTOCOL"</span>,
+  <span class="key">"P0"</span>: <span class="val">"COMPRESSOR:unit-4821"</span>,
+  <span class="key">"P1"</span>: {
+    <span class="key">"type"</span>: <span class="val">"PREDICTIVE"</span>,
+    <span class="key">"metric"</span>: <span class="val">"METRIC:vibration"</span>,
+    <span class="key">"threshold"</span>: <span class="val">6.0</span>,
+    <span class="key">"current_trend"</span>: <span class="val">"increasing"</span>,
+    <span class="key">"estimated_failure_date"</span>: <span class="val">"DATE:4-15-2026"</span>,
+    <span class="key">"action"</span>: <span class="val">"generate_quote_60_days_prior"</span>
+  },
+  <span class="key">"P2"</span>: {
+    <span class="key">"parts_needed"</span>: [<span class="val">"PART:valve-AC-2847"</span>, <span class="val">"PART:bearing-AC-1100"</span>],
+    <span class="key">"estimated_cost"</span>: <span class="val">4200</span>,
+    <span class="key">"assigned_branch"</span>: <span class="val">"BRANCH:tps-houston"</span>
+  }
+}
+  </div>
+
+  <p>This is where Charlotte transforms ISG from a reactive parts distributor into a predictive one &mdash; detecting signal drift and generating proactive service quotes before equipment fails.</p>
+
+</div>
+
+<div class="doc-footer">
+  CHARLOTTE &mdash; INFRASTRUCTURE FOR OBSERVABLE REALITY
+</div>
+
+</body>
+</html>
