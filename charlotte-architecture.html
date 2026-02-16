@@ -27,6 +27,41 @@ html, body {
 }
 h1, h2, h3, h4, .label { font-family: 'Oswald', sans-serif; }
 
+/* Auth screen */
+.auth-screen {
+  height: 100vh; display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 32px;
+}
+.auth-screen .logo {
+  width: 80px; height: 80px; border-radius: 22px;
+  background: linear-gradient(135deg, var(--secondary), var(--primary), var(--tertiary));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Oswald'; font-weight: 600; font-size: 36px; color: white;
+  box-shadow: 0 0 60px rgba(114,0,203,0.3);
+}
+.auth-screen h1 { font-size: 32px; letter-spacing: 3px; font-weight: 500; }
+.auth-form { display: flex; gap: 10px; align-items: center; }
+.auth-form input {
+  background: var(--glass-fill); border: 1px solid var(--glass-border);
+  color: var(--text-primary); padding: 12px 18px; border-radius: 10px;
+  font-family: 'Inter'; font-size: 14px; width: 240px; outline: none;
+  transition: border-color 0.2s ease;
+}
+.auth-form input:focus { border-color: var(--primary-light); }
+.auth-form input::placeholder { color: var(--text-tertiary); }
+.auth-form button {
+  background: linear-gradient(135deg, var(--primary), rgba(114,0,203,0.8));
+  border: 1px solid var(--primary-light); color: white;
+  padding: 12px 24px; border-radius: 10px; cursor: pointer;
+  font-family: 'Oswald'; font-size: 14px; letter-spacing: 1px;
+  transition: all 0.2s ease;
+}
+.auth-form button:hover { box-shadow: 0 0 30px rgba(114,0,203,0.4); transform: translateY(-1px); }
+.auth-error {
+  color: var(--error); font-size: 13px; height: 20px;
+  font-family: 'Oswald'; letter-spacing: 0.5px;
+}
+
 /* Header */
 .doc-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -170,6 +205,20 @@ code {
 </style>
 </head>
 <body>
+
+<!-- AUTH SCREEN -->
+<div class="auth-screen" id="authScreen">
+  <div class="logo">C</div>
+  <h1>ARCHITECTURE REFERENCE</h1>
+  <form class="auth-form" onsubmit="authenticate(event)">
+    <input type="password" id="passInput" placeholder="Enter access code" autocomplete="off" autofocus>
+    <button type="submit">ENTER</button>
+  </form>
+  <div class="auth-error" id="authError"></div>
+</div>
+
+<!-- PROTECTED CONTENT -->
+<div class="doc-page" id="docPage" style="display:none;">
 
 <header class="doc-header">
   <div class="doc-brand">
@@ -602,6 +651,34 @@ NODE &larr; SIGNAL &rarr; METRIC    <span class="comment">(signal's P0 &rarr; no
 <div class="doc-footer">
   CHARLOTTE &mdash; INFRASTRUCTURE FOR OBSERVABLE REALITY
 </div>
+
+</div><!-- end doc-page -->
+
+<script>
+const PASS = 'charles';
+
+async function authenticate(e) {
+  e.preventDefault();
+  const input = document.getElementById('passInput').value;
+  if (input === PASS) {
+    sessionStorage.setItem('charlotte_arch_auth', 'true');
+    showDoc();
+  } else {
+    document.getElementById('authError').textContent = 'Invalid access code';
+    document.getElementById('passInput').value = '';
+    document.getElementById('passInput').focus();
+  }
+}
+
+function showDoc() {
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('docPage').style.display = 'block';
+}
+
+if (sessionStorage.getItem('charlotte_arch_auth') === 'true') {
+  showDoc();
+}
+</script>
 
 </body>
 </html>
