@@ -42,7 +42,7 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
 /* === LAYOUT === */
 #app {
   display: grid;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: auto auto auto 1fr;
   height: 100vh;
   gap: 0;
 }
@@ -52,7 +52,7 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 28px;
+  padding: 14px 28px;
   background: rgba(45,43,46,0.80);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -94,21 +94,80 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
   letter-spacing: 0.5px;
 }
 
+/* === PHASE BAR === */
+.phase-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0 28px;
+  background: rgba(45,43,46,0.50);
+  border-bottom: 1px solid var(--glass-border);
+  height: 40px;
+}
+
+.phase-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  position: relative;
+  transition: all 0.4s ease;
+}
+
+.phase-step .phase-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  transition: all 0.4s ease;
+}
+
+.phase-step.active { color: var(--tertiary); }
+.phase-step.active .phase-num {
+  border-color: var(--tertiary);
+  background: rgba(33,214,198,0.15);
+  color: var(--tertiary);
+}
+
+.phase-step.completed { color: var(--text-secondary); }
+.phase-step.completed .phase-num {
+  border-color: var(--tertiary);
+  background: var(--tertiary);
+  color: var(--bg);
+}
+
+.phase-connector {
+  flex: 1;
+  height: 1px;
+  background: var(--surface-variant);
+  margin: 0 4px;
+  position: relative;
+}
+
+.phase-connector .fill {
+  height: 100%;
+  background: var(--tertiary);
+  width: 0%;
+  transition: width 0.6s ease;
+}
+
 /* === TIME CONTROLS === */
 .time-controls {
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 10px 20px;
-  background: rgba(45,43,46,0.60);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(45,43,46,0.40);
   border-bottom: 1px solid var(--glass-border);
-}
-
-.time-controls .btn-group {
-  display: flex;
-  gap: 6px;
 }
 
 .btn {
@@ -122,14 +181,10 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
   font-size: 13px;
   letter-spacing: 0.5px;
   transition: all 0.2s ease;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
 }
 
 .btn:hover { background: var(--glass-fill-hover); border-color: rgba(255,255,255,0.2); }
 .btn.active { background: rgba(114,0,203,0.3); border-color: var(--primary-light); color: white; }
-.btn.primary-btn { background: rgba(114,0,203,0.4); border-color: var(--primary); }
-.btn.primary-btn:hover { background: rgba(114,0,203,0.6); }
 
 .play-btn {
   width: 38px;
@@ -146,12 +201,12 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
 
 .time-display {
   font-family: 'Oswald', sans-serif;
-  font-size: 16px;
+  font-size: 15px;
   color: var(--text-secondary);
-  min-width: 120px;
+  min-width: 180px;
 }
 
-.time-display strong { color: var(--tertiary); font-size: 18px; }
+.time-display strong { color: var(--tertiary); font-size: 17px; }
 
 .progress-track {
   flex: 1;
@@ -223,40 +278,40 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
   overflow: hidden;
 }
 
-/* === EQUIPMENT GRID === */
-.equipment-panel {
-  padding: 20px 24px;
+/* === PROTOCOL GRID === */
+.protocol-panel {
+  padding: 16px 20px;
   overflow-y: auto;
 }
 
-.equipment-panel h2 {
-  font-size: 14px;
+.protocol-panel h2 {
+  font-size: 13px;
   color: var(--text-tertiary);
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
-.equipment-grid {
+.protocol-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 14px;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
-/* === EQUIPMENT CARD === */
-.equipment-card {
+/* === PROTOCOL CARD === */
+.protocol-card {
   background: var(--glass-fill);
   border: 1px solid var(--glass-border);
   border-radius: 14px;
-  padding: 18px;
+  padding: 16px 18px;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  transition: all 0.4s ease;
+  transition: all 0.5s ease;
   position: relative;
   overflow: hidden;
 }
 
-.equipment-card::before {
+.protocol-card::before {
   content: '';
   position: absolute;
   inset: -1px;
@@ -267,161 +322,152 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
   mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  transition: background 0.4s ease;
+  transition: background 0.5s ease;
   pointer-events: none;
 }
 
-.equipment-card.warning { border-color: rgba(255,217,61,0.4); }
-.equipment-card.warning::before { background: linear-gradient(135deg, rgba(255,217,61,0.3), transparent); }
+.protocol-card.pending { opacity: 0.5; }
 
-.equipment-card.critical { border-color: rgba(206,79,81,0.5); }
-.equipment-card.critical::before { background: linear-gradient(135deg, rgba(206,79,81,0.4), transparent); }
-
-.equipment-card.detected {
-  border-color: rgba(33,214,198,0.5);
-  box-shadow: 0 0 30px rgba(33,214,198,0.15);
+.protocol-card.building {
+  border-color: rgba(255,217,61,0.35);
+  opacity: 1;
 }
-.equipment-card.detected::before { background: linear-gradient(135deg, rgba(33,214,198,0.3), transparent); }
+.protocol-card.building::before { background: linear-gradient(135deg, rgba(255,217,61,0.2), transparent); }
 
-.equipment-card.quote-sent {
-  border-color: rgba(114,0,203,0.5);
-  box-shadow: 0 0 25px rgba(114,0,203,0.15);
+.protocol-card.active {
+  border-color: rgba(33,214,198,0.4);
+  box-shadow: 0 0 25px rgba(33,214,198,0.08);
+  opacity: 1;
 }
-.equipment-card.quote-sent::before { background: linear-gradient(135deg, rgba(114,0,203,0.3), transparent); }
+.protocol-card.active::before { background: linear-gradient(135deg, rgba(33,214,198,0.25), transparent); }
 
-.equipment-card.failed {
-  border-color: rgba(206,79,81,0.6);
-  box-shadow: 0 0 30px rgba(206,79,81,0.2);
+.protocol-card.optimizing {
+  border-color: rgba(114,0,203,0.4);
+  box-shadow: 0 0 25px rgba(114,0,203,0.1);
+  opacity: 1;
 }
+.protocol-card.optimizing::before { background: linear-gradient(135deg, rgba(114,0,203,0.25), transparent); }
 
-.card-header {
+.card-top {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 
-.card-header-left h3 {
-  font-size: 16px;
+.card-top h3 {
+  font-size: 15px;
   font-weight: 500;
-  margin-bottom: 2px;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
 }
 
-.card-header-left .location {
-  font-size: 12px;
+.card-desc {
+  font-size: 11.5px;
   color: var(--text-tertiary);
+  margin-bottom: 14px;
+  line-height: 1.4;
 }
 
-.status-badge {
+.proto-badge {
   font-family: 'Oswald', sans-serif;
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  padding: 4px 10px;
+  padding: 3px 9px;
   border-radius: 20px;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.status-badge.normal { background: rgba(33,214,198,0.15); color: var(--tertiary); border: 1px solid rgba(33,214,198,0.3); }
-.status-badge.warning { background: rgba(255,217,61,0.15); color: var(--warning); border: 1px solid rgba(255,217,61,0.3); }
-.status-badge.critical { background: rgba(206,79,81,0.15); color: var(--error); border: 1px solid rgba(206,79,81,0.3); }
-.status-badge.detected { background: rgba(33,214,198,0.2); color: var(--tertiary); border: 1px solid rgba(33,214,198,0.4); }
-.status-badge.quote-sent { background: rgba(114,0,203,0.2); color: var(--primary-light); border: 1px solid rgba(114,0,203,0.4); }
-.status-badge.failed { background: rgba(206,79,81,0.25); color: #FF6B6B; border: 1px solid rgba(206,79,81,0.5); }
+.proto-badge.pending { background: rgba(91,87,94,0.3); color: var(--text-tertiary); border: 1px solid rgba(91,87,94,0.4); }
+.proto-badge.building { background: rgba(255,217,61,0.15); color: var(--warning); border: 1px solid rgba(255,217,61,0.3); }
+.proto-badge.active { background: rgba(33,214,198,0.15); color: var(--tertiary); border: 1px solid rgba(33,214,198,0.3); }
+.proto-badge.optimizing { background: rgba(114,0,203,0.2); color: var(--primary-light); border: 1px solid rgba(114,0,203,0.3); }
 
-.sparklines {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.card-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 12px;
 }
 
-.sparkline-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.card-metric {
+  text-align: center;
 }
 
-.sparkline-label {
+.card-metric .cm-val {
   font-family: 'Oswald', sans-serif;
-  font-size: 11px;
-  letter-spacing: 0.5px;
-  color: var(--text-tertiary);
-  width: 72px;
-  text-transform: uppercase;
-}
-
-.sparkline-canvas {
-  flex: 1;
-  height: 32px;
-  border-radius: 4px;
-}
-
-.sparkline-value {
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
+  font-size: 18px;
   font-weight: 500;
-  width: 52px;
-  text-align: right;
+  color: var(--text-primary);
+  line-height: 1.2;
 }
 
-.card-footer {
+.card-metric .cm-label {
+  font-size: 9.5px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-family: 'Oswald', sans-serif;
+}
+
+.protocol-card.pending .cm-val { color: var(--text-tertiary); }
+
+.card-chart {
+  width: 100%;
+  height: 36px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.card-revenue {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 14px;
-  padding-top: 12px;
+  padding-top: 10px;
   border-top: 1px solid var(--glass-border);
 }
 
-.card-footer .runtime {
-  font-size: 12px;
+.card-revenue .cr-label {
+  font-size: 10px;
   color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Oswald', sans-serif;
 }
 
-.card-footer .next-service {
-  font-size: 12px;
-  color: var(--text-tertiary);
+.card-revenue .cr-val {
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  font-weight: 500;
 }
 
-.quote-banner {
-  margin-top: 12px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  font-size: 12px;
-  display: none;
+.protocol-card.pending .cr-val { color: var(--text-tertiary); }
+.protocol-card.building .cr-val { color: var(--warning); }
+.protocol-card.active .cr-val { color: var(--tertiary); }
+.protocol-card.optimizing .cr-val { color: var(--primary-light); }
+
+.card-event {
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  min-height: 38px;
+  display: flex;
   align-items: center;
-  gap: 8px;
-  animation: slidein 0.4s ease;
+  gap: 6px;
 }
 
-.quote-banner.visible { display: flex; }
+.card-event .ce-icon { flex-shrink: 0; font-size: 12px; }
 
-.quote-banner.proactive {
-  background: rgba(114,0,203,0.15);
-  border: 1px solid rgba(114,0,203,0.3);
-  color: var(--primary-light);
+.protocol-card.pending .card-event {
+  color: var(--text-tertiary);
+  font-style: italic;
 }
-
-.quote-banner.failure {
-  background: rgba(206,79,81,0.15);
-  border: 1px solid rgba(206,79,81,0.3);
-  color: #FF6B6B;
-}
-
-.quote-banner .icon { font-size: 16px; }
-.quote-banner .amount { font-weight: 600; font-family: 'Oswald', sans-serif; font-size: 14px; }
-
-@keyframes slidein {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(33,214,198,0.1); }
-  50% { box-shadow: 0 0 35px rgba(33,214,198,0.25); }
-}
-
-.equipment-card.detected { animation: pulse-glow 2s ease-in-out infinite; }
 
 /* === RIGHT PANEL === */
 .right-panel {
@@ -431,33 +477,30 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
   overflow: hidden;
 }
 
-/* === METRICS PANEL === */
 .metrics-panel {
-  padding: 20px;
+  padding: 18px;
   border-bottom: 1px solid var(--glass-border);
 }
 
 .metrics-panel h2 {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-tertiary);
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .metrics-comparison {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 10px;
 }
 
 .metric-column {
   background: var(--glass-fill);
   border: 1px solid var(--glass-border);
   border-radius: 12px;
-  padding: 14px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  padding: 12px;
 }
 
 .metric-column.charlotte {
@@ -471,25 +514,22 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
 }
 
 .metric-column h3 {
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
   border-bottom: 1px solid var(--glass-border);
 }
 
 .metric-column.charlotte h3 { color: var(--tertiary); }
 .metric-column.without h3 { color: var(--error); }
 
-.metric-item {
-  margin-bottom: 10px;
-}
-
+.metric-item { margin-bottom: 8px; }
 .metric-item:last-child { margin-bottom: 0; }
 
 .metric-item .metric-label {
-  font-size: 10px;
+  font-size: 9.5px;
   color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -498,7 +538,7 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
 
 .metric-item .metric-value {
   font-family: 'Oswald', sans-serif;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 500;
   line-height: 1.2;
 }
@@ -506,15 +546,9 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
 .metric-column.charlotte .metric-value { color: var(--tertiary); }
 .metric-column.without .metric-value { color: var(--error); }
 
-.metric-item .metric-sub {
-  font-size: 11px;
-  color: var(--text-tertiary);
-}
-
-/* === TOTAL IMPACT === */
 .total-impact {
-  margin-top: 14px;
-  padding: 14px;
+  margin-top: 12px;
+  padding: 12px;
   background: rgba(114,0,203,0.08);
   border: 1px solid rgba(114,0,203,0.25);
   border-radius: 12px;
@@ -522,16 +556,16 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
 }
 
 .total-impact .label {
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: var(--primary-light);
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .total-impact .value {
   font-family: 'Oswald', sans-serif;
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 600;
   background: linear-gradient(135deg, var(--secondary), var(--primary-light), var(--tertiary));
   -webkit-background-clip: text;
@@ -542,45 +576,45 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
 .total-impact .subtitle {
   font-size: 11px;
   color: var(--text-tertiary);
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 /* === EVENT LOG === */
 .event-log {
   flex: 1;
-  padding: 20px;
+  padding: 18px;
   overflow-y: auto;
   min-height: 0;
 }
 
 .event-log h2 {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text-tertiary);
   letter-spacing: 2px;
   text-transform: uppercase;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .event-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .event-item {
   display: flex;
-  gap: 10px;
-  padding: 10px 12px;
+  gap: 8px;
+  padding: 8px 10px;
   background: var(--glass-fill);
   border: 1px solid var(--glass-border);
   border-radius: 8px;
   animation: slidein 0.3s ease;
-  font-size: 12px;
+  font-size: 11.5px;
   line-height: 1.4;
 }
 
 .event-item .event-icon {
-  font-size: 14px;
+  font-size: 13px;
   flex-shrink: 0;
   margin-top: 1px;
 }
@@ -596,16 +630,18 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
   margin-top: 1px;
 }
 
-.event-item.detection { border-color: rgba(33,214,198,0.3); }
-.event-item.quote { border-color: rgba(114,0,203,0.3); }
-.event-item.failure { border-color: rgba(206,79,81,0.3); }
-.event-item.info { border-color: var(--glass-border); }
+.event-item.system { border-color: var(--glass-border); }
+.event-item.pricing { border-color: rgba(33,214,198,0.25); }
+.event-item.reactivation { border-color: rgba(240,0,210,0.25); }
+.event-item.crossref { border-color: rgba(114,0,203,0.25); }
+.event-item.lifecycle { border-color: rgba(255,217,61,0.25); }
+.event-item.milestone { border-color: rgba(33,214,198,0.4); background: rgba(33,214,198,0.06); }
 
 /* === INTRO OVERLAY === */
 .intro-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(35,35,36,0.92);
+  background: rgba(35,35,36,0.94);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   display: flex;
@@ -613,14 +649,15 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
   justify-content: center;
   z-index: 100;
   transition: opacity 0.5s ease;
+  overflow-y: auto;
 }
 
 .intro-overlay.hidden { opacity: 0; pointer-events: none; }
 
 .intro-content {
   text-align: center;
-  max-width: 520px;
-  padding: 40px;
+  max-width: 640px;
+  padding: 40px 40px 32px;
 }
 
 .intro-content .intro-logo {
@@ -643,23 +680,77 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
   font-size: 36px;
   font-weight: 500;
   letter-spacing: 2px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .intro-content .subtitle {
   font-size: 16px;
   color: var(--text-tertiary);
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   font-family: 'Oswald', sans-serif;
   letter-spacing: 1px;
 }
 
-.intro-content p {
+.intro-content .intro-text {
   font-size: 14px;
   color: var(--text-secondary);
   line-height: 1.7;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
+  text-align: left;
 }
+
+.intro-protocols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 28px;
+  text-align: left;
+}
+
+.intro-proto {
+  padding: 12px 14px;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+}
+
+.intro-proto .ip-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.intro-proto .ip-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+}
+
+.intro-proto .ip-desc {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+}
+
+.intro-proto:nth-child(1) { border-color: rgba(33,214,198,0.3); }
+.intro-proto:nth-child(2) { border-color: rgba(240,0,210,0.3); }
+.intro-proto:nth-child(3) { border-color: rgba(114,0,203,0.3); }
+.intro-proto:nth-child(4) { border-color: rgba(255,217,61,0.3); }
+
+.intro-contract {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  margin-bottom: 24px;
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.5px;
+}
+
+.intro-contract strong { color: var(--primary-light); }
 
 .start-btn {
   background: linear-gradient(135deg, var(--primary), rgba(114,0,203,0.8));
@@ -680,12 +771,17 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
   box-shadow: 0 0 50px rgba(114,0,203,0.5);
 }
 
-/* === RESET BUTTON === */
-.reset-section {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+@keyframes slidein {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+
+@keyframes pulse-build {
+  0%, 100% { box-shadow: 0 0 15px rgba(255,217,61,0.05); }
+  50% { box-shadow: 0 0 25px rgba(255,217,61,0.15); }
+}
+
+.protocol-card.building { animation: pulse-build 2.5s ease-in-out infinite; }
 
 /* === SCROLLBAR === */
 ::-webkit-scrollbar { width: 6px; }
@@ -696,8 +792,14 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
 /* === RESPONSIVE === */
 @media (max-width: 1100px) {
   .main-content { grid-template-columns: 1fr; }
-  .right-panel { border-left: none; border-top: 1px solid var(--glass-border); max-height: 320px; }
-  .equipment-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  .right-panel { border-left: none; border-top: 1px solid var(--glass-border); max-height: 340px; }
+  .protocol-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 720px) {
+  .protocol-grid { grid-template-columns: 1fr; }
+  .intro-protocols { grid-template-columns: 1fr; }
+  .phase-step span:not(.phase-num) { display: none; }
 }
 </style>
 </head>
@@ -710,26 +812,47 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
       <div class="brand-logo">C</div>
       <h1>CHARLOTTE <span>Predictive Distribution Simulator</span></h1>
     </div>
-    <div class="reset-section">
+    <div>
       <button class="btn" onclick="resetSimulation()">RESET</button>
     </div>
   </header>
 
+  <!-- PHASE BAR -->
+  <div class="phase-bar">
+    <div class="phase-step" id="phase-engage">
+      <span class="phase-num">1</span>
+      <span>Engage</span>
+    </div>
+    <div class="phase-connector"><div class="fill" id="pconn-1"></div></div>
+    <div class="phase-step" id="phase-drive">
+      <span class="phase-num">2</span>
+      <span>Drive</span>
+    </div>
+    <div class="phase-connector"><div class="fill" id="pconn-2"></div></div>
+    <div class="phase-step" id="phase-enable">
+      <span class="phase-num">3</span>
+      <span>Enable</span>
+    </div>
+    <div class="phase-connector"><div class="fill" id="pconn-3"></div></div>
+    <div class="phase-step" id="phase-stabilize">
+      <span class="phase-num">4</span>
+      <span>Stabilize</span>
+    </div>
+  </div>
+
   <!-- TIME CONTROLS -->
   <div class="time-controls">
-    <div class="btn-group">
-      <button class="btn play-btn" id="playBtn" onclick="togglePlay()">&#9654;</button>
-    </div>
-    <div class="time-display">
-      Month <strong id="currentMonth">0</strong> of 12
+    <button class="btn play-btn" id="playBtn" onclick="togglePlay()">&#9654;</button>
+    <div class="time-display" id="timeDisplay">
+      Month <strong>0</strong> of 12 &mdash; <span class="phase-label">Ready</span>
     </div>
     <div style="flex:1">
       <div class="progress-track" id="progressTrack" onclick="seekTo(event)">
         <div class="progress-fill" id="progressFill" style="width:0%"></div>
       </div>
       <div class="month-markers">
-        <span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span><span>MAY</span><span>JUN</span>
-        <span>JUL</span><span>AUG</span><span>SEP</span><span>OCT</span><span>NOV</span><span>DEC</span>
+        <span>MAR</span><span>APR</span><span>MAY</span><span>JUN</span><span>JUL</span><span>AUG</span>
+        <span>SEP</span><span>OCT</span><span>NOV</span><span>DEC</span><span>JAN</span><span>FEB</span>
       </div>
     </div>
     <div class="speed-btns">
@@ -741,10 +864,10 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
 
   <!-- MAIN -->
   <div class="main-content">
-    <!-- Equipment Grid -->
-    <div class="equipment-panel">
-      <h2>Equipment Fleet — ISG Portfolio</h2>
-      <div class="equipment-grid" id="equipmentGrid"></div>
+    <!-- Protocol Grid -->
+    <div class="protocol-panel">
+      <h2>Charlotte Intelligence Protocols &mdash; ISG Compressor Vertical</h2>
+      <div class="protocol-grid" id="protocolGrid"></div>
     </div>
 
     <!-- Right Panel -->
@@ -755,38 +878,38 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
           <div class="metric-column charlotte">
             <h3>With Charlotte</h3>
             <div class="metric-item">
-              <div class="metric-label">Proactive Quotes</div>
-              <div class="metric-value" id="m-quotes">0</div>
+              <div class="metric-label">Active Protocols</div>
+              <div class="metric-value" id="m-protocols">0 / 4</div>
             </div>
             <div class="metric-item">
-              <div class="metric-label">Revenue Captured</div>
-              <div class="metric-value" id="m-rev-charlotte">$0</div>
+              <div class="metric-label">Revenue Generated</div>
+              <div class="metric-value" id="m-rev">$0</div>
             </div>
             <div class="metric-item">
-              <div class="metric-label">Avg Response</div>
-              <div class="metric-value" id="m-response-charlotte">—</div>
+              <div class="metric-label">Customers Recovered</div>
+              <div class="metric-value" id="m-recovered">0</div>
             </div>
           </div>
           <div class="metric-column without">
             <h3>Without Charlotte</h3>
             <div class="metric-item">
-              <div class="metric-label">Emergency Calls</div>
-              <div class="metric-value" id="m-emergency">0</div>
+              <div class="metric-label">Revenue Leaking</div>
+              <div class="metric-value" id="m-leak">$0</div>
             </div>
             <div class="metric-item">
-              <div class="metric-label">Revenue Lost</div>
-              <div class="metric-value" id="m-rev-lost">$0</div>
+              <div class="metric-label">Customers Churning</div>
+              <div class="metric-value" id="m-churn">0</div>
             </div>
             <div class="metric-item">
-              <div class="metric-label">Downtime Hours</div>
-              <div class="metric-value" id="m-downtime">0</div>
+              <div class="metric-label">Pricing Blind Spots</div>
+              <div class="metric-value" id="m-blind">100+ SKUs</div>
             </div>
           </div>
         </div>
         <div class="total-impact">
-          <div class="label">Net Value Created</div>
+          <div class="label">Net Charlotte Uplift</div>
           <div class="value" id="m-total">$0</div>
-          <div class="subtitle">proactive revenue + avoided downtime costs</div>
+          <div class="subtitle" id="m-roi">Year 1 ROI on $480K investment</div>
         </div>
       </div>
 
@@ -804,13 +927,40 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
     <div class="intro-logo">C</div>
     <h1>CHARLOTTE</h1>
     <div class="subtitle">Predictive Distribution Simulator</div>
-    <p>
-      Watch Charlotte monitor a fleet of industrial compressors across ISG's portfolio.
-      As equipment signals drift from expected baselines, Charlotte detects deviation
-      early and generates proactive service quotes — before the customer even knows
-      there's a problem.
-    </p>
-    <button class="start-btn" onclick="startSimulation()">LAUNCH SIMULATOR</button>
+    <div class="intro-text">
+      ISG is a $3B+ industrial holding company managing 16 brands across compressed air, pumps, valves,
+      and motors. Their compressor division serves <strong>62,000+ facilities</strong> across Texas, Indiana,
+      Ohio, Florida, Tennessee, and Kentucky in a <strong>$12-15 billion</strong> US market.<br><br>
+      This simulation recreates <strong>Year 1</strong> of Charlotte's deployment at ISG (March 2026 &ndash; February 2027).
+      Watch four intelligence protocols activate over 12 months, generating revenue ISG cannot access
+      without the intelligence layer.
+    </div>
+    <div class="intro-protocols">
+      <div class="intro-proto">
+        <div class="ip-num">Protocol 1 &mdash; Week 8</div>
+        <div class="ip-name">Pricing Intelligence</div>
+        <div class="ip-desc">Track competitor prices daily across CompressorWorld, CompressorNow, ACS, and Amazon. Optimize margins on top 100 SKUs.</div>
+      </div>
+      <div class="intro-proto">
+        <div class="ip-num">Protocol 2 &mdash; Week 16</div>
+        <div class="ip-name">Customer Reactivation</div>
+        <div class="ip-desc">Detect dormant accounts at 60/90/180-day thresholds. Automated outreach campaigns with product affinity targeting.</div>
+      </div>
+      <div class="intro-proto">
+        <div class="ip-num">Protocol 3 &mdash; Week 16</div>
+        <div class="ip-name">Product Cross-Reference</div>
+        <div class="ip-desc">Map OEM parts to aftermarket equivalents. Automate cross-sell recommendations when customers purchase equipment.</div>
+      </div>
+      <div class="intro-proto">
+        <div class="ip-num">Protocol 4 &mdash; Week 24</div>
+        <div class="ip-name">Equipment Lifecycle</div>
+        <div class="ip-desc">Track installed base by age, hours, and repair costs. Fire replacement signals and convert to Total Care Bundles.</div>
+      </div>
+    </div>
+    <div class="intro-contract">
+      Year 1 Contract: <strong>$480,000</strong> &nbsp;|&nbsp; Expected ROI: <strong>18-26x</strong>
+    </div>
+    <button class="start-btn" onclick="startSimulation()">LAUNCH SIMULATION</button>
   </div>
 </div>
 
@@ -818,145 +968,275 @@ h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
 // ============================================================
 // CONFIGURATION
 // ============================================================
-const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const MONTHS = ['MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC','JAN','FEB'];
 const TOTAL_MONTHS = 12;
-const TICK_MS = 2000; // base speed
+const TICK_MS = 2500;
+
+// Phases: month ranges (1-indexed)
+const PHASES = [
+  { id: 'engage',    label: 'Engage',    months: [1, 1] },
+  { id: 'drive',     label: 'Drive',     months: [2, 4] },
+  { id: 'enable',    label: 'Enable',    months: [5, 10] },
+  { id: 'stabilize', label: 'Stabilize', months: [11, 12] }
+];
 
 // ============================================================
-// EQUIPMENT DATA
+// PROTOCOL DEFINITIONS
 // ============================================================
-const equipment = [
+const PROTOCOLS = [
   {
-    id: 'comp-1',
-    name: 'Atlas Copco GA-90',
-    location: 'Refinery Alpha — Houston, TX',
-    brand: 'Midwest Air Solutions',
-    runHours: 42680,
-    signals: { vibration: [], temperature: [], pressure: [] },
-    baselines: { vibration: 4.2, temperature: 185, pressure: 125 },
-    units: { vibration: 'mm/s', temperature: '°F', pressure: 'PSI' },
-    driftStart: 7,      // month drift begins
-    driftRate: 0.6,     // how fast signals degrade per month
-    driftMetric: 'vibration',
-    detectMonth: 9,     // Charlotte detects
-    failMonth: 11,      // failure without Charlotte
-    quoteValue: 34000,
-    downtimeCost: 420000,
-    downtimeHours: 22,
-    status: 'normal',
-    detected: false,
-    quoteSent: false,
-    failed: false
+    id: 'pricing',
+    name: 'Pricing Intelligence',
+    desc: 'Daily competitive price tracking across CompressorWorld, CompressorNow, ACS, and Amazon on the top 100 SKUs.',
+    metricLabels: ['SKUs Tracked', 'Price Alerts', 'Margin +bps'],
+    metricKeys: ['skus', 'alerts', 'bps'],
+    color: 'rgba(33,214,198,',
+    pendingEvent: 'Activates Week 8 — competitive pricing data delivery'
   },
   {
-    id: 'comp-2',
-    name: 'Ingersoll Rand R-110',
-    location: 'Chemical Plant Beta — Lake Charles, LA',
-    brand: 'Gulf Coast Compressor',
-    runHours: 61200,
-    signals: { vibration: [], temperature: [], pressure: [] },
-    baselines: { vibration: 5.8, temperature: 195, pressure: 130 },
-    units: { vibration: 'mm/s', temperature: '°F', pressure: 'PSI' },
-    driftStart: 0,
-    driftRate: 1.2,
-    driftMetric: 'vibration',
-    detectMonth: 3,
-    failMonth: 5,
-    quoteValue: 52000,
-    downtimeCost: 890000,
-    downtimeHours: 36,
-    status: 'normal',
-    detected: false,
-    quoteSent: false,
-    failed: false
+    id: 'reactivation',
+    name: 'Customer Reactivation',
+    desc: 'Five-tier dormancy engine (Active, AtRisk, Dormant, Lapsed, Lost) with automated outreach and product affinity targeting.',
+    metricLabels: ['Dormant Found', 'Campaigns', 'Recovered'],
+    metricKeys: ['dormant', 'campaigns', 'recovered'],
+    color: 'rgba(240,0,210,',
+    pendingEvent: 'Activates Week 16 — dormancy detection begins'
   },
   {
-    id: 'comp-3',
-    name: 'Sullair LS-20',
-    location: 'Manufacturing Gamma — Gary, IN',
-    brand: 'Great Lakes Industrial',
-    runHours: 28400,
-    signals: { vibration: [], temperature: [], pressure: [] },
-    baselines: { vibration: 3.1, temperature: 175, pressure: 118 },
-    units: { vibration: 'mm/s', temperature: '°F', pressure: 'PSI' },
-    driftStart: 99,     // never drifts
-    driftRate: 0,
-    driftMetric: 'vibration',
-    detectMonth: 99,
-    failMonth: 99,
-    quoteValue: 0,
-    downtimeCost: 0,
-    downtimeHours: 0,
-    status: 'normal',
-    detected: false,
-    quoteSent: false,
-    failed: false
+    id: 'crossref',
+    name: 'Product Cross-Reference',
+    desc: 'OEM-to-aftermarket part mappings, cross-brand equipment equivalents, and automated cross-sell recommendations.',
+    metricLabels: ['Mappings', 'Opportunities', 'Conversions'],
+    metricKeys: ['mappings', 'opps', 'conversions'],
+    color: 'rgba(114,0,203,',
+    pendingEvent: 'Activates Week 16 — cross-reference tables building'
   },
   {
-    id: 'comp-4',
-    name: 'Kaeser CSD-75',
-    location: 'Food Processing Delta — Columbus, OH',
-    brand: 'Buckeye Compressed Air',
-    runHours: 37900,
-    signals: { vibration: [], temperature: [], pressure: [] },
-    baselines: { vibration: 3.8, temperature: 180, pressure: 122 },
-    units: { vibration: 'mm/s', temperature: '°F', pressure: 'PSI' },
-    driftStart: 3,
-    driftRate: 0.5,
-    driftMetric: 'temperature',
-    detectMonth: 6,
-    failMonth: 9,
-    quoteValue: 28000,
-    downtimeCost: 310000,
-    downtimeHours: 18,
-    status: 'normal',
-    detected: false,
-    quoteSent: false,
-    failed: false
-  },
+    id: 'lifecycle',
+    name: 'Equipment Lifecycle',
+    desc: 'Installed base tracking by model, age, hours, and repair costs. Fires replacement signals and generates Total Care Bundle offers.',
+    metricLabels: ['Units Tracked', 'Signals', 'Conversions'],
+    metricKeys: ['units', 'signals', 'conversions'],
+    color: 'rgba(255,217,61,',
+    pendingEvent: 'Activates Week 24 — installed base mapping begins'
+  }
+];
+
+// ============================================================
+// MONTHLY DATA — scripted for presentation consistency
+// Each month: protocol statuses, metric snapshots, events
+// ============================================================
+const MONTHLY_DATA = [
+  // === MONTH 1 (March 2026) — ENGAGE ===
   {
-    id: 'comp-5',
-    name: 'Quincy QGD-40',
-    location: 'Steel Mill Epsilon — Birmingham, AL',
-    brand: 'Southern Compressor Group',
-    runHours: 55100,
-    signals: { vibration: [], temperature: [], pressure: [] },
-    baselines: { vibration: 6.1, temperature: 200, pressure: 140 },
-    units: { vibration: 'mm/s', temperature: '°F', pressure: 'PSI' },
-    driftStart: 1,
-    driftRate: 1.8,
-    driftMetric: 'pressure',
-    detectMonth: 3,
-    failMonth: 4,
-    quoteValue: 85000,
-    downtimeCost: 2100000,
-    downtimeHours: 48,
-    status: 'normal',
-    detected: false,
-    quoteSent: false,
-    failed: false
+    phase: 'engage',
+    protocols: {
+      pricing:      { status: 'pending', skus: 0, alerts: 0, bps: 0, rev: 0 },
+      reactivation: { status: 'pending', dormant: 0, campaigns: 0, recovered: 0, rev: 0 },
+      crossref:     { status: 'pending', mappings: 0, opps: 0, conversions: 0, rev: 0 },
+      lifecycle:    { status: 'pending', units: 0, signals: 0, conversions: 0, rev: 0 }
+    },
+    without: { leak: 915000, churn: 74 },
+    events: [
+      { cat: 'system', icon: '>', text: 'Charlotte substrate deployed on Firebase — Firestore initialized' },
+      { cat: 'system', icon: '>', text: 'NetSuite ERP connected (bi-directional) — 3 years of IAP/IAC transaction history loading' },
+      { cat: 'system', icon: '>', text: 'HubSpot CRM synced — 12,400 customer records mapped to knowledge graph' },
+      { cat: 'system', icon: '>', text: 'BigCommerce storefront integrated — 2,400 product SKUs cataloged' },
+      { cat: 'system', icon: '>', text: '47,000+ historical purchase transactions ingested as SIGNALs' }
+    ]
   },
+  // === MONTH 2 (April 2026) — DRIVE / Protocol 1 activates ===
   {
-    id: 'comp-6',
-    name: 'Gardner Denver L-55',
-    location: 'Pharma Zeta — Research Triangle, NC',
-    brand: 'Atlantic Air Systems',
-    runHours: 44300,
-    signals: { vibration: [], temperature: [], pressure: [] },
-    baselines: { vibration: 4.5, temperature: 178, pressure: 120 },
-    units: { vibration: 'mm/s', temperature: '°F', pressure: 'PSI' },
-    driftStart: 4,
-    driftRate: 0.35,
-    driftMetric: 'temperature',
-    detectMonth: 7,
-    failMonth: 10,
-    quoteValue: 41000,
-    downtimeCost: 560000,
-    downtimeHours: 14,
-    status: 'normal',
-    detected: false,
-    quoteSent: false,
-    failed: false
+    phase: 'drive',
+    protocols: {
+      pricing:      { status: 'building', skus: 100, alerts: 12, bps: 45, rev: 67500 },
+      reactivation: { status: 'pending', dormant: 0, campaigns: 0, recovered: 0, rev: 0 },
+      crossref:     { status: 'pending', mappings: 0, opps: 0, conversions: 0, rev: 0 },
+      lifecycle:    { status: 'pending', units: 0, signals: 0, conversions: 0, rev: 0 }
+    },
+    without: { leak: 1830000, churn: 148 },
+    events: [
+      { cat: 'milestone', icon: '*', text: 'PROTOCOL 1 ACTIVATED — Pricing Intelligence online (Week 8 milestone)' },
+      { cat: 'pricing', icon: '$', text: 'Now tracking 100 top SKUs daily across CompressorWorld, CompressorNow, ACS, Amazon' },
+      { cat: 'pricing', icon: '!', text: 'ALERT: CompressorWorld lists IR UP6-15 at $12,800 vs ISG $14,000 — price match recommended' },
+      { cat: 'pricing', icon: '!', text: 'ALERT: ACS private-label Quincy filter kit at $67 vs ISG OEM $89 — hold: service bundle value exceeds $22 gap' },
+      { cat: 'pricing', icon: '$', text: 'Amazon compressed air category up 23% YoY — Charlotte tracking 15 new equipment listings' }
+    ]
+  },
+  // === MONTH 3 (May 2026) — DRIVE ===
+  {
+    phase: 'drive',
+    protocols: {
+      pricing:      { status: 'active', skus: 100, alerts: 31, bps: 125, rev: 202500 },
+      reactivation: { status: 'pending', dormant: 0, campaigns: 0, recovered: 0, rev: 0 },
+      crossref:     { status: 'pending', mappings: 0, opps: 0, conversions: 0, rev: 0 },
+      lifecycle:    { status: 'pending', units: 0, signals: 0, conversions: 0, rev: 0 }
+    },
+    without: { leak: 2745000, churn: 223 },
+    events: [
+      { cat: 'pricing', icon: '$', text: '47 competitive price observations recorded this month across 4 retailers' },
+      { cat: 'pricing', icon: '~', text: 'CompressorNow seasonal promo detected on FS-Curtis filters — pattern logged for Q2 2027 planning' },
+      { cat: 'pricing', icon: '!', text: 'Kaishan KRST-20 listed 22% below ISG on CompressorPros — niche brand, low volume: hold pricing' },
+      { cat: 'pricing', icon: '+', text: 'Margin improvement: +125 bps on top 25 high-volume parts SKUs' },
+      { cat: 'system', icon: '>', text: 'Knowledge graph milestone: 14,200 NODEs, 8,400 EDGEs, 52,000 SIGNALs' }
+    ]
+  },
+  // === MONTH 4 (June 2026) — ENABLE / Protocols 2+3 activate ===
+  {
+    phase: 'enable',
+    protocols: {
+      pricing:      { status: 'active', skus: 100, alerts: 52, bps: 180, rev: 382500 },
+      reactivation: { status: 'building', dormant: 2847, campaigns: 342, recovered: 28, rev: 85000 },
+      crossref:     { status: 'building', mappings: 187, opps: 34, conversions: 8, rev: 45000 },
+      lifecycle:    { status: 'pending', units: 0, signals: 0, conversions: 0, rev: 0 }
+    },
+    without: { leak: 3660000, churn: 312 },
+    events: [
+      { cat: 'milestone', icon: '*', text: 'PROTOCOL 2 ACTIVATED — Customer Reactivation Engine online (Week 16)' },
+      { cat: 'reactivation', icon: '!', text: '2,847 dormant accounts identified from 3 years of purchase history (>90 days inactive)' },
+      { cat: 'reactivation', icon: '+', text: 'Campaign A: 342 "AtRisk" customers (60-90 days) targeted with product affinity offers' },
+      { cat: 'milestone', icon: '*', text: 'PROTOCOL 3 ACTIVATED — Product Cross-Reference online' },
+      { cat: 'crossref', icon: '+', text: '187 OEM-to-aftermarket part mappings established — ACS private-label counter-strategy loaded' },
+      { cat: 'crossref', icon: '$', text: 'Cross-sell: customer purchased IR UP6-25 — Charlotte recommended refrigerated dryer add-on ($3,200)' }
+    ]
+  },
+  // === MONTH 5 (July 2026) ===
+  {
+    phase: 'enable',
+    protocols: {
+      pricing:      { status: 'active', skus: 100, alerts: 71, bps: 200, rev: 607500 },
+      reactivation: { status: 'active', dormant: 3120, campaigns: 847, recovered: 79, rev: 260000 },
+      crossref:     { status: 'active', mappings: 412, opps: 89, conversions: 24, rev: 155000 },
+      lifecycle:    { status: 'pending', units: 0, signals: 0, conversions: 0, rev: 0 }
+    },
+    without: { leak: 4575000, churn: 398 },
+    events: [
+      { cat: 'reactivation', icon: '+', text: '52 customers reactivated this month — $127K recovered revenue' },
+      { cat: 'reactivation', icon: '!', text: 'Campaign B: 505 "Dormant" tier customers (90-180 days) now targeted' },
+      { cat: 'pricing', icon: '!', text: 'CompressorWorld dropped Quincy QGS-25 by $800 — Charlotte recommends hold (service premium justified)' },
+      { cat: 'crossref', icon: '~', text: 'ACS private-label separator = IR OEM 39137631 — 35% markup delta identified' },
+      { cat: 'crossref', icon: '+', text: '14 cross-sell opportunities generated from installed base purchase patterns' }
+    ]
+  },
+  // === MONTH 6 (August 2026) — FULL PLATFORM / Protocol 4 activates ===
+  {
+    phase: 'enable',
+    protocols: {
+      pricing:      { status: 'active', skus: 100, alerts: 93, bps: 210, rev: 832500 },
+      reactivation: { status: 'active', dormant: 3280, campaigns: 1240, recovered: 131, rev: 610000 },
+      crossref:     { status: 'active', mappings: 580, opps: 142, conversions: 42, rev: 380000 },
+      lifecycle:    { status: 'building', units: 1247, signals: 23, conversions: 3, rev: 120000 }
+    },
+    without: { leak: 5490000, churn: 481 },
+    events: [
+      { cat: 'milestone', icon: '*', text: 'PROTOCOL 4 ACTIVATED — Equipment Lifecycle Management online. ALL 4 PROTOCOLS NOW RUNNING.' },
+      { cat: 'lifecycle', icon: '+', text: '1,247 installed compressor units mapped from service records across ISG territories' },
+      { cat: 'lifecycle', icon: '!', text: 'SIGNAL: 2008 Quincy QT-15 at Columbus food plant — 62K hrs, repair costs 55% of replacement — Total Care Bundle recommended ($349/mo)' },
+      { cat: 'lifecycle', icon: '!', text: 'SIGNAL: 2011 IR SS5L5 at Houston auto shop — 15 yrs old, energy efficiency down 22% — upgrade to UP6-15 VSD recommended ($299/mo)' },
+      { cat: 'lifecycle', icon: '$', text: 'Food processing customer converted to Total Care Bundle — $41,700 three-year value' }
+    ]
+  },
+  // === MONTH 7 (September 2026) ===
+  {
+    phase: 'enable',
+    protocols: {
+      pricing:      { status: 'active', skus: 100, alerts: 118, bps: 215, rev: 1057500 },
+      reactivation: { status: 'active', dormant: 3410, campaigns: 1680, recovered: 186, rev: 960000 },
+      crossref:     { status: 'active', mappings: 710, opps: 198, conversions: 61, rev: 605000 },
+      lifecycle:    { status: 'active', units: 1580, signals: 52, conversions: 8, rev: 370000 }
+    },
+    without: { leak: 6405000, churn: 547 },
+    events: [
+      { cat: 'pricing', icon: '$', text: 'Monthly summary: ISG repriced 23 SKUs, held 14, beat 6 competitor offers this month' },
+      { cat: 'reactivation', icon: '$', text: 'Lapsed account (180+ days) in DFW reactivated — new 25HP rotary screw + service agreement ($28,500)' },
+      { cat: 'lifecycle', icon: '!', text: 'SIGNAL: 2009 Atlas Copco GA-11 at Tampa medical device facility — maintenance costs accelerating — replacement proposal sent' },
+      { cat: 'crossref', icon: '+', text: 'Dryer attachment rate reached 42% on new compressor sales (up from 18% pre-Charlotte)' }
+    ]
+  },
+  // === MONTH 8 (October 2026) ===
+  {
+    phase: 'enable',
+    protocols: {
+      pricing:      { status: 'active', skus: 100, alerts: 144, bps: 235, rev: 1282500 },
+      reactivation: { status: 'active', dormant: 3510, campaigns: 2150, recovered: 238, rev: 1310000 },
+      crossref:     { status: 'active', mappings: 815, opps: 257, conversions: 79, rev: 830000 },
+      lifecycle:    { status: 'active', units: 1820, signals: 89, conversions: 16, rev: 745000 }
+    },
+    without: { leak: 7320000, churn: 612 },
+    events: [
+      { cat: 'system', icon: '>', text: 'Knowledge graph: 22,000 NODEs, 15,000 EDGEs, 140,000 SIGNALs — growing daily' },
+      { cat: 'lifecycle', icon: '$', text: '3 replacement conversions this month — $125K in Total Care Bundle value' },
+      { cat: 'reactivation', icon: '~', text: 'Pattern: HVAC-adjacent facilities reactivate at 2.3x rate vs. manufacturing — weighting campaigns' },
+      { cat: 'pricing', icon: '!', text: 'Amazon seller "IndustrialAirDirect" undercutting Champion reciprocating by 15% — Charlotte recommends meeting price' }
+    ]
+  },
+  // === MONTH 9 (November 2026) ===
+  {
+    phase: 'enable',
+    protocols: {
+      pricing:      { status: 'active', skus: 100, alerts: 172, bps: 250, rev: 1507500 },
+      reactivation: { status: 'active', dormant: 3580, campaigns: 2640, recovered: 287, rev: 1660000 },
+      crossref:     { status: 'active', mappings: 890, opps: 320, conversions: 96, rev: 1055000 },
+      lifecycle:    { status: 'active', units: 2010, signals: 134, conversions: 27, rev: 1215000 }
+    },
+    without: { leak: 8235000, churn: 674 },
+    events: [
+      { cat: 'lifecycle', icon: '$', text: '11 replacement proposals converted this month — $412K total revenue from lifecycle signals' },
+      { cat: 'reactivation', icon: '+', text: 'Dormant recovery rate: 18.4% — within 15-20% target range' },
+      { cat: 'pricing', icon: '+', text: 'Year-to-date: ISG margins up 250 bps on Charlotte-monitored SKUs' },
+      { cat: 'crossref', icon: '>', text: 'Cross-reference database: 890 OEM-to-aftermarket mappings active' }
+    ]
+  },
+  // === MONTH 10 (December 2026) — STABILIZE ===
+  {
+    phase: 'stabilize',
+    protocols: {
+      pricing:      { status: 'optimizing', skus: 100, alerts: 198, bps: 260, rev: 1732500 },
+      reactivation: { status: 'optimizing', dormant: 3620, campaigns: 3080, recovered: 332, rev: 2010000 },
+      crossref:     { status: 'optimizing', mappings: 945, opps: 375, conversions: 112, rev: 1280000 },
+      lifecycle:    { status: 'optimizing', units: 2100, signals: 178, conversions: 40, rev: 1685000 }
+    },
+    without: { leak: 9150000, churn: 731 },
+    events: [
+      { cat: 'milestone', icon: '*', text: 'Phase transition: STABILIZE — performance optimization and ROI documentation underway' },
+      { cat: 'lifecycle', icon: '+', text: 'Installed base expanded to 2,100 units tracked across all 6 ISG states' },
+      { cat: 'pricing', icon: '~', text: 'Seasonal pattern: Q4 food processing demand up 12% — ISG held pricing while competitors discounted' },
+      { cat: 'reactivation', icon: '$', text: '"Lost" tier campaign (365+ days): 3 long-dormant accounts reactivated — $47K combined' }
+    ]
+  },
+  // === MONTH 11 (January 2027) ===
+  {
+    phase: 'stabilize',
+    protocols: {
+      pricing:      { status: 'optimizing', skus: 100, alerts: 222, bps: 265, rev: 1957500 },
+      reactivation: { status: 'optimizing', dormant: 3650, campaigns: 3480, recovered: 374, rev: 2360000 },
+      crossref:     { status: 'optimizing', mappings: 990, opps: 422, conversions: 127, rev: 1505000 },
+      lifecycle:    { status: 'optimizing', units: 2200, signals: 221, conversions: 55, rev: 2155000 }
+    },
+    without: { leak: 10065000, churn: 789 },
+    events: [
+      { cat: 'lifecycle', icon: '~', text: 'Year 2 replacement pipeline: 340 units approaching end-of-life in next 18 months' },
+      { cat: 'pricing', icon: '+', text: 'Full year intelligence: ISG outperformed competitors on 67% of head-to-head SKU comparisons' },
+      { cat: 'reactivation', icon: '+', text: 'Customer retention rate: 91% (vs. 72% pre-Charlotte baseline)' },
+      { cat: 'system', icon: '>', text: 'ROI case study documentation in progress for Daved Karl and ISG leadership' }
+    ]
+  },
+  // === MONTH 12 (February 2027) ===
+  {
+    phase: 'stabilize',
+    protocols: {
+      pricing:      { status: 'optimizing', skus: 100, alerts: 245, bps: 270, rev: 2182500 },
+      reactivation: { status: 'optimizing', dormant: 3680, campaigns: 3840, recovered: 412, rev: 2710000 },
+      crossref:     { status: 'optimizing', mappings: 1020, opps: 465, conversions: 141, rev: 1730000 },
+      lifecycle:    { status: 'optimizing', units: 2280, signals: 262, conversions: 71, rev: 2625000 }
+    },
+    without: { leak: 10980000, churn: 847 },
+    events: [
+      { cat: 'milestone', icon: '*', text: 'YEAR 1 COMPLETE — Charlotte Predictive Distribution fully operational' },
+      { cat: 'milestone', icon: '*', text: 'Year 1 total: $9.25M Charlotte-driven revenue on $480K investment — 19.3x ROI' },
+      { cat: 'system', icon: '>', text: '412 customers reactivated | 262 replacement signals | 141 cross-sell conversions | +270 bps margin' },
+      { cat: 'system', icon: '>', text: 'Pinnacle Industries & ASE expansion scope defined for Year 2' }
+    ]
   }
 ];
 
@@ -968,221 +1248,116 @@ let state = {
   playing: false,
   speed: 1,
   timer: null,
-  metrics: {
-    quotes: 0,
-    revCharlotte: 0,
-    emergency: 0,
-    revLost: 0,
-    downtime: 0,
-    responseTimes: []
-  },
-  events: []
+  events: [],
+  revenueHistory: { pricing: [], reactivation: [], crossref: [], lifecycle: [] }
 };
 
 // ============================================================
-// SIGNAL GENERATION
+// RENDERING — Protocol Cards
 // ============================================================
-function generateSignal(eq, metric, month) {
-  const base = eq.baselines[metric];
-  const noise = (Math.random() - 0.5) * base * 0.04;
-
-  let drift = 0;
-  if (metric === eq.driftMetric && month >= eq.driftStart) {
-    const monthsInDrift = month - eq.driftStart;
-    drift = eq.driftRate * Math.pow(monthsInDrift, 1.3);
-  }
-
-  // secondary metrics get mild sympathetic drift
-  if (metric !== eq.driftMetric && month >= eq.driftStart + 2) {
-    const monthsIn = month - eq.driftStart - 2;
-    drift = eq.driftRate * 0.15 * monthsIn;
-  }
-
-  return base + drift + noise;
-}
-
-function generateAllSignals(month) {
-  equipment.forEach(eq => {
-    ['vibration', 'temperature', 'pressure'].forEach(metric => {
-      const value = generateSignal(eq, metric, month);
-      eq.signals[metric].push(value);
-    });
-    eq.runHours += Math.round(500 + Math.random() * 220);
-  });
-}
-
-// ============================================================
-// DETECTION & EVENTS
-// ============================================================
-function checkDetections(month) {
-  equipment.forEach(eq => {
-    if (eq.detectMonth === 99) return;
-
-    // Charlotte detection
-    if (month === eq.detectMonth && !eq.detected) {
-      eq.detected = true;
-      eq.status = 'detected';
-      const metric = eq.driftMetric;
-      const current = eq.signals[metric][eq.signals[metric].length - 1];
-      const base = eq.baselines[metric];
-      const pctDrift = (((current - base) / base) * 100).toFixed(1);
-      addEvent('detection', `Charlotte detected ${pctDrift}% ${metric} drift on ${eq.name} at ${eq.location.split('—')[0].trim()}`, month);
-    }
-
-    // Proactive quote (1 month after detection)
-    if (month === eq.detectMonth + 1 && !eq.quoteSent) {
-      eq.quoteSent = true;
-      eq.status = 'quote-sent';
-      state.metrics.quotes++;
-      state.metrics.revCharlotte += eq.quoteValue;
-      state.metrics.responseTimes.push(eq.detectMonth - eq.driftStart);
-      addEvent('quote', `Proactive service quote sent: $${eq.quoteValue.toLocaleString()} — ${eq.name}. Customer scheduled maintenance before failure.`, month);
-    }
-
-    // Failure (without Charlotte) — tracked for comparison
-    if (month === eq.failMonth) {
-      state.metrics.emergency++;
-      state.metrics.revLost += eq.downtimeCost;
-      state.metrics.downtime += eq.downtimeHours;
-      if (!eq.quoteSent) {
-        eq.failed = true;
-        eq.status = 'failed';
-        addEvent('failure', `WITHOUT CHARLOTTE: ${eq.name} failed. ${eq.downtimeHours}h unplanned downtime. Emergency repair cost: $${eq.downtimeCost.toLocaleString()}`, month);
-      } else {
-        addEvent('info', `${eq.name} would have failed this month without Charlotte. Proactive service prevented $${eq.downtimeCost.toLocaleString()} in downtime costs.`, month);
-      }
-    }
-
-    // Warning state (between drift start and detection)
-    if (month >= eq.driftStart + 1 && !eq.detected && eq.status === 'normal') {
-      const metric = eq.driftMetric;
-      const current = eq.signals[metric][eq.signals[metric].length - 1];
-      const base = eq.baselines[metric];
-      const pctDrift = ((current - base) / base) * 100;
-      if (pctDrift > 8) {
-        eq.status = 'critical';
-      } else if (pctDrift > 3) {
-        eq.status = 'warning';
-      }
-    }
-  });
-}
-
-function addEvent(type, text, month) {
-  state.events.unshift({ type, text, month });
-  renderEvents();
-}
-
-// ============================================================
-// RENDERING
-// ============================================================
-function buildEquipmentCards() {
-  const grid = document.getElementById('equipmentGrid');
+function buildProtocolCards() {
+  const grid = document.getElementById('protocolGrid');
   grid.innerHTML = '';
-  equipment.forEach(eq => {
+  PROTOCOLS.forEach(proto => {
     const card = document.createElement('div');
-    card.className = 'equipment-card';
-    card.id = `card-${eq.id}`;
+    card.className = 'protocol-card pending';
+    card.id = `card-${proto.id}`;
     card.innerHTML = `
-      <div class="card-header">
-        <div class="card-header-left">
-          <h3>${eq.name}</h3>
-          <div class="location">${eq.location}</div>
-        </div>
-        <div class="status-badge normal" id="badge-${eq.id}">NORMAL</div>
+      <div class="card-top">
+        <h3>${proto.name}</h3>
+        <span class="proto-badge pending" id="badge-${proto.id}">PENDING</span>
       </div>
-      <div class="sparklines">
-        <div class="sparkline-row">
-          <span class="sparkline-label">Vibration</span>
-          <canvas class="sparkline-canvas" id="spark-${eq.id}-vibration" height="32"></canvas>
-          <span class="sparkline-value" id="val-${eq.id}-vibration">—</span>
+      <div class="card-desc">${proto.desc}</div>
+      <div class="card-metrics">
+        <div class="card-metric">
+          <div class="cm-val" id="cm-${proto.id}-0">—</div>
+          <div class="cm-label">${proto.metricLabels[0]}</div>
         </div>
-        <div class="sparkline-row">
-          <span class="sparkline-label">Temperature</span>
-          <canvas class="sparkline-canvas" id="spark-${eq.id}-temperature" height="32"></canvas>
-          <span class="sparkline-value" id="val-${eq.id}-temperature">—</span>
+        <div class="card-metric">
+          <div class="cm-val" id="cm-${proto.id}-1">—</div>
+          <div class="cm-label">${proto.metricLabels[1]}</div>
         </div>
-        <div class="sparkline-row">
-          <span class="sparkline-label">Pressure</span>
-          <canvas class="sparkline-canvas" id="spark-${eq.id}-pressure" height="32"></canvas>
-          <span class="sparkline-value" id="val-${eq.id}-pressure">—</span>
+        <div class="card-metric">
+          <div class="cm-val" id="cm-${proto.id}-2">—</div>
+          <div class="cm-label">${proto.metricLabels[2]}</div>
         </div>
       </div>
-      <div class="card-footer">
-        <span class="runtime" id="hours-${eq.id}">${eq.runHours.toLocaleString()} run hours</span>
-        <span class="next-service">${eq.brand}</span>
+      <canvas class="card-chart" id="chart-${proto.id}" height="36"></canvas>
+      <div class="card-revenue">
+        <span class="cr-label">Revenue Generated</span>
+        <span class="cr-val" id="rev-${proto.id}">$0</span>
       </div>
-      <div class="quote-banner" id="banner-${eq.id}">
-        <span class="icon"></span>
-        <span class="banner-text"></span>
-        <span class="amount"></span>
+      <div class="card-event" id="evt-${proto.id}">
+        <span class="ce-icon">~</span>
+        <span>${proto.pendingEvent}</span>
       </div>
     `;
     grid.appendChild(card);
   });
 }
 
-function renderEquipment() {
-  equipment.forEach(eq => {
-    const card = document.getElementById(`card-${eq.id}`);
-    const badge = document.getElementById(`badge-${eq.id}`);
-    const banner = document.getElementById(`banner-${eq.id}`);
+function renderProtocolCards() {
+  if (state.month === 0) {
+    PROTOCOLS.forEach(proto => {
+      const card = document.getElementById(`card-${proto.id}`);
+      const badge = document.getElementById(`badge-${proto.id}`);
+      card.className = 'protocol-card pending';
+      badge.className = 'proto-badge pending';
+      badge.textContent = 'PENDING';
+      proto.metricKeys.forEach((_, i) => {
+        document.getElementById(`cm-${proto.id}-${i}`).textContent = '—';
+      });
+      document.getElementById(`rev-${proto.id}`).textContent = '$0';
+      document.getElementById(`evt-${proto.id}`).innerHTML =
+        `<span class="ce-icon">~</span><span>${proto.pendingEvent}</span>`;
+    });
+    return;
+  }
 
-    // Status
-    card.className = `equipment-card ${eq.status}`;
-    badge.className = `status-badge ${eq.status}`;
+  const data = MONTHLY_DATA[state.month - 1];
+  const statusLabels = { pending: 'PENDING', building: 'BUILDING', active: 'ACTIVE', optimizing: 'OPTIMIZING' };
 
-    const statusLabels = {
-      normal: 'NORMAL',
-      warning: 'DRIFTING',
-      critical: 'CRITICAL',
-      detected: 'DETECTED',
-      'quote-sent': 'QUOTE SENT',
-      failed: 'FAILED'
-    };
-    badge.textContent = statusLabels[eq.status] || 'NORMAL';
+  PROTOCOLS.forEach(proto => {
+    const pd = data.protocols[proto.id];
+    const card = document.getElementById(`card-${proto.id}`);
+    const badge = document.getElementById(`badge-${proto.id}`);
 
-    // Run hours
-    document.getElementById(`hours-${eq.id}`).textContent = `${eq.runHours.toLocaleString()} run hours`;
+    card.className = `protocol-card ${pd.status}`;
+    badge.className = `proto-badge ${pd.status}`;
+    badge.textContent = statusLabels[pd.status];
 
-    // Sparklines
-    ['vibration', 'temperature', 'pressure'].forEach(metric => {
-      drawSparkline(eq, metric);
-      const vals = eq.signals[metric];
-      const valEl = document.getElementById(`val-${eq.id}-${metric}`);
-      if (vals.length > 0) {
-        const v = vals[vals.length - 1];
-        valEl.textContent = metric === 'vibration' ? v.toFixed(1) + ' mm/s' :
-                           metric === 'temperature' ? Math.round(v) + '°F' :
-                           Math.round(v) + ' PSI';
-        // Color based on drift
-        const base = eq.baselines[metric];
-        const pctDrift = Math.abs((v - base) / base) * 100;
-        if (pctDrift > 10) valEl.style.color = '#CE4F51';
-        else if (pctDrift > 5) valEl.style.color = '#FFD93D';
-        else valEl.style.color = 'var(--text-secondary)';
+    // Metrics
+    proto.metricKeys.forEach((key, i) => {
+      const el = document.getElementById(`cm-${proto.id}-${i}`);
+      const val = pd[key];
+      if (pd.status === 'pending') {
+        el.textContent = '—';
+      } else {
+        el.textContent = typeof val === 'number' ? val.toLocaleString() : val;
       }
     });
 
-    // Banner
-    if (eq.quoteSent) {
-      banner.className = 'quote-banner proactive visible';
-      banner.querySelector('.icon').textContent = '✓';
-      banner.querySelector('.banner-text').textContent = 'Proactive quote sent — service scheduled';
-      banner.querySelector('.amount').textContent = `$${eq.quoteValue.toLocaleString()}`;
-    } else if (eq.failed) {
-      banner.className = 'quote-banner failure visible';
-      banner.querySelector('.icon').textContent = '✕';
-      banner.querySelector('.banner-text').textContent = `Emergency failure — ${eq.downtimeHours}h downtime`;
-      banner.querySelector('.amount').textContent = `-$${eq.downtimeCost.toLocaleString()}`;
-    } else {
-      banner.className = 'quote-banner';
+    // Revenue
+    const revEl = document.getElementById(`rev-${proto.id}`);
+    revEl.textContent = pd.rev > 0 ? '$' + pd.rev.toLocaleString() : '$0';
+
+    // Latest event for this protocol
+    const protoEvents = data.events.filter(e => e.cat === proto.id || (e.cat === 'milestone' && e.text.includes(`PROTOCOL ${PROTOCOLS.indexOf(proto) + 1}`)));
+    const evtEl = document.getElementById(`evt-${proto.id}`);
+    if (protoEvents.length > 0) {
+      const latest = protoEvents[protoEvents.length - 1];
+      evtEl.innerHTML = `<span class="ce-icon">${latest.icon}</span><span>${latest.text}</span>`;
+    } else if (pd.status === 'pending') {
+      evtEl.innerHTML = `<span class="ce-icon">~</span><span>${proto.pendingEvent}</span>`;
     }
+
+    // Sparkline chart
+    drawProtoChart(proto.id);
   });
 }
 
-function drawSparkline(eq, metric) {
-  const canvas = document.getElementById(`spark-${eq.id}-${metric}`);
+function drawProtoChart(protoId) {
+  const canvas = document.getElementById(`chart-${protoId}`);
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio || 1;
@@ -1193,104 +1368,187 @@ function drawSparkline(eq, metric) {
 
   const w = canvas.offsetWidth;
   const h = canvas.offsetHeight;
-  const data = eq.signals[metric];
-  if (data.length < 2) { ctx.clearRect(0,0,w,h); return; }
-
-  const base = eq.baselines[metric];
-  const threshold = base * 1.12;
-  const allVals = data.concat([base * 0.92, base * 1.25]);
-  const min = Math.min(...allVals);
-  const max = Math.max(...allVals);
-  const range = max - min || 1;
+  const history = state.revenueHistory[protoId];
 
   ctx.clearRect(0, 0, w, h);
 
-  // Expected range band
-  const bandTop = h - ((base * 1.05 - min) / range) * h;
-  const bandBot = h - ((base * 0.95 - min) / range) * h;
-  ctx.fillStyle = 'rgba(33,214,198,0.06)';
-  ctx.fillRect(0, bandTop, w, bandBot - bandTop);
+  if (history.length < 1) return;
 
-  // Threshold line
-  const threshY = h - ((threshold - min) / range) * h;
-  ctx.strokeStyle = 'rgba(206,79,81,0.25)';
-  ctx.lineWidth = 1;
-  ctx.setLineDash([4,4]);
-  ctx.beginPath();
-  ctx.moveTo(0, threshY);
-  ctx.lineTo(w, threshY);
-  ctx.stroke();
-  ctx.setLineDash([]);
+  // Find final max for consistent scale
+  const finalData = MONTHLY_DATA[MONTHLY_DATA.length - 1].protocols[protoId];
+  const maxVal = Math.max(finalData.rev * 1.05, 1);
 
-  // Signal line
   const stepX = w / (TOTAL_MONTHS - 1);
+
+  // Area fill
   ctx.beginPath();
-  data.forEach((v, i) => {
+  ctx.moveTo(0, h);
+  history.forEach((v, i) => {
     const x = i * stepX;
-    const y = h - ((v - min) / range) * h;
+    const y = h - (v / maxVal) * (h - 4);
+    if (i === 0) ctx.lineTo(x, y); else ctx.lineTo(x, y);
+  });
+  ctx.lineTo((history.length - 1) * stepX, h);
+  ctx.closePath();
+
+  const proto = PROTOCOLS.find(p => p.id === protoId);
+  ctx.fillStyle = proto.color + '0.08)';
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  history.forEach((v, i) => {
+    const x = i * stepX;
+    const y = h - (v / maxVal) * (h - 4);
     if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
   });
-
-  const lastVal = data[data.length - 1];
-  const pctDrift = ((lastVal - base) / base) * 100;
-  if (pctDrift > 10) ctx.strokeStyle = '#CE4F51';
-  else if (pctDrift > 5) ctx.strokeStyle = '#FFD93D';
-  else ctx.strokeStyle = '#21D6C6';
-
+  ctx.strokeStyle = proto.color + '0.7)';
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // Latest point dot
-  if (data.length > 0) {
-    const lastX = (data.length - 1) * stepX;
-    const lastY = h - ((lastVal - min) / range) * h;
+  // End dot
+  if (history.length > 0) {
+    const lastX = (history.length - 1) * stepX;
+    const lastY = h - (history[history.length - 1] / maxVal) * (h - 4);
     ctx.beginPath();
     ctx.arc(lastX, lastY, 3, 0, Math.PI * 2);
-    ctx.fillStyle = ctx.strokeStyle;
+    ctx.fillStyle = proto.color + '0.9)';
     ctx.fill();
   }
 }
 
+// ============================================================
+// RENDERING — Financial Metrics
+// ============================================================
 function renderMetrics() {
-  const m = state.metrics;
-  document.getElementById('m-quotes').textContent = m.quotes;
-  document.getElementById('m-rev-charlotte').textContent = '$' + m.revCharlotte.toLocaleString();
-  document.getElementById('m-emergency').textContent = m.emergency;
-  document.getElementById('m-rev-lost').textContent = '$' + m.revLost.toLocaleString();
-  document.getElementById('m-downtime').textContent = m.downtime;
-
-  if (m.responseTimes.length > 0) {
-    const avg = (m.responseTimes.reduce((a,b) => a+b, 0) / m.responseTimes.length).toFixed(1);
-    document.getElementById('m-response-charlotte').textContent = avg + ' mo early';
+  if (state.month === 0) {
+    document.getElementById('m-protocols').textContent = '0 / 4';
+    document.getElementById('m-rev').textContent = '$0';
+    document.getElementById('m-recovered').textContent = '0';
+    document.getElementById('m-leak').textContent = '$0';
+    document.getElementById('m-churn').textContent = '0';
+    document.getElementById('m-blind').textContent = '100+ SKUs';
+    document.getElementById('m-total').textContent = '$0';
+    document.getElementById('m-roi').textContent = 'Year 1 ROI on $480K investment';
+    return;
   }
 
-  const total = m.revCharlotte + m.revLost; // revenue captured + downtime avoided
-  document.getElementById('m-total').textContent = '$' + total.toLocaleString();
+  const data = MONTHLY_DATA[state.month - 1];
+  const protos = data.protocols;
+
+  // Count active protocols
+  let activeCount = 0;
+  Object.values(protos).forEach(p => {
+    if (p.status !== 'pending') activeCount++;
+  });
+
+  // Total revenue
+  const totalRev = protos.pricing.rev + protos.reactivation.rev + protos.crossref.rev + protos.lifecycle.rev;
+  const recovered = protos.reactivation.recovered;
+
+  document.getElementById('m-protocols').textContent = activeCount + ' / 4';
+  document.getElementById('m-rev').textContent = '$' + totalRev.toLocaleString();
+  document.getElementById('m-recovered').textContent = recovered.toLocaleString();
+
+  // Without Charlotte
+  document.getElementById('m-leak').textContent = '$' + data.without.leak.toLocaleString();
+  document.getElementById('m-churn').textContent = data.without.churn.toLocaleString();
+
+  const blindText = protos.pricing.status === 'pending' ? '100+ SKUs' : '0 SKUs';
+  document.getElementById('m-blind').textContent = blindText;
+
+  // Net uplift
+  document.getElementById('m-total').textContent = '$' + totalRev.toLocaleString();
+  if (totalRev > 0) {
+    const roi = (totalRev / 480000).toFixed(1);
+    document.getElementById('m-roi').textContent = roi + 'x ROI on $480K investment';
+  } else {
+    document.getElementById('m-roi').textContent = 'Year 1 ROI on $480K investment';
+  }
 }
 
+// ============================================================
+// RENDERING — Phase Bar
+// ============================================================
+function renderPhaseBar() {
+  const currentPhase = state.month === 0 ? null : MONTHLY_DATA[state.month - 1].phase;
+
+  const phaseOrder = ['engage', 'drive', 'enable', 'stabilize'];
+  const currentIdx = currentPhase ? phaseOrder.indexOf(currentPhase) : -1;
+
+  phaseOrder.forEach((pid, i) => {
+    const el = document.getElementById(`phase-${pid}`);
+    el.className = 'phase-step';
+    if (i < currentIdx) el.classList.add('completed');
+    else if (i === currentIdx) el.classList.add('active');
+
+    // Update connector fills
+    if (i < 3) {
+      const conn = document.getElementById(`pconn-${i + 1}`);
+      if (i < currentIdx) conn.style.width = '100%';
+      else if (i === currentIdx) conn.style.width = '50%';
+      else conn.style.width = '0%';
+    }
+  });
+
+  // Update checkmarks for completed phases
+  phaseOrder.forEach((pid, i) => {
+    const numEl = document.querySelector(`#phase-${pid} .phase-num`);
+    if (i < currentIdx) {
+      numEl.textContent = '\u2713';
+    } else {
+      numEl.textContent = (i + 1).toString();
+    }
+  });
+}
+
+// ============================================================
+// RENDERING — Events
+// ============================================================
 function renderEvents() {
   const list = document.getElementById('eventList');
   list.innerHTML = '';
-  state.events.slice(0, 30).forEach(ev => {
+
+  const iconMap = {
+    '>': '\u25B8', '$': '\u25C6', '!': '\u25B2', '+': '\u2605',
+    '~': '\u25CB', '*': '\u2726'
+  };
+
+  state.events.slice(0, 40).forEach(ev => {
     const item = document.createElement('div');
-    item.className = `event-item ${ev.type}`;
-    const icons = { detection: '◉', quote: '▶', failure: '✕', info: '○' };
+    item.className = `event-item ${ev.cat}`;
     item.innerHTML = `
-      <span class="event-icon">${icons[ev.type] || '○'}</span>
+      <span class="event-icon">${iconMap[ev.icon] || '\u25CB'}</span>
       <span class="event-text">${ev.text}</span>
-      <span class="event-time">${MONTHS[ev.month]}</span>
+      <span class="event-time">${ev.monthLabel}</span>
     `;
     list.appendChild(item);
   });
 }
 
+// ============================================================
+// RENDERING — Time Controls
+// ============================================================
 function renderTimeControls() {
-  document.getElementById('currentMonth').textContent = state.month;
   const pct = (state.month / TOTAL_MONTHS) * 100;
   document.getElementById('progressFill').style.width = pct + '%';
+
   const playBtn = document.getElementById('playBtn');
   playBtn.innerHTML = state.playing ? '&#9646;&#9646;' : '&#9654;';
   playBtn.className = state.playing ? 'btn play-btn playing' : 'btn play-btn';
+
+  const display = document.getElementById('timeDisplay');
+  if (state.month === 0) {
+    display.innerHTML = 'Month <strong>0</strong> of 12 &mdash; <span class="phase-label">Ready</span>';
+  } else {
+    const data = MONTHLY_DATA[state.month - 1];
+    const phaseLabel = data.phase.charAt(0).toUpperCase() + data.phase.slice(1);
+    display.innerHTML = `Month <strong>${state.month}</strong> of 12 &mdash; <span class="phase-label">${MONTHS[state.month - 1]} 2026 &middot; ${phaseLabel}</span>`;
+    // Fix Jan/Feb to 2027
+    if (state.month >= 11) {
+      display.innerHTML = `Month <strong>${state.month}</strong> of 12 &mdash; <span class="phase-label">${MONTHS[state.month - 1]} 2027 &middot; ${phaseLabel}</span>`;
+    }
+  }
 }
 
 // ============================================================
@@ -1303,17 +1561,27 @@ function tick() {
   }
 
   state.month++;
-  generateAllSignals(state.month);
-  checkDetections(state.month);
+  const data = MONTHLY_DATA[state.month - 1];
 
-  // Month start event
-  if (state.month === 1) {
-    addEvent('info', 'Charlotte monitoring initiated. Establishing baselines across ISG fleet.', state.month);
-  }
+  // Record revenue history for sparklines
+  PROTOCOLS.forEach(proto => {
+    state.revenueHistory[proto.id].push(data.protocols[proto.id].rev);
+  });
 
-  renderEquipment();
+  // Add events to feed (newest first)
+  const monthEvents = data.events.map(e => ({
+    ...e,
+    monthLabel: MONTHS[state.month - 1]
+  }));
+  // Reverse so newest appear at top
+  monthEvents.reverse().forEach(e => state.events.unshift(e));
+
+  // Render everything
+  renderProtocolCards();
   renderMetrics();
+  renderPhaseBar();
   renderTimeControls();
+  renderEvents();
 }
 
 function play() {
@@ -1353,19 +1621,21 @@ function seekTo(e) {
   const wasPlaying = state.playing;
   if (wasPlaying) pause();
 
-  // Reset and replay to target month
+  // Reset and replay to target
   resetState();
   for (let i = 0; i < targetMonth; i++) {
     state.month++;
-    generateAllSignals(state.month);
-    checkDetections(state.month);
-  }
-  if (state.month === 0) {
-    addEvent('info', 'Charlotte monitoring initiated. Establishing baselines across ISG fleet.', 0);
+    const data = MONTHLY_DATA[state.month - 1];
+    PROTOCOLS.forEach(proto => {
+      state.revenueHistory[proto.id].push(data.protocols[proto.id].rev);
+    });
+    const monthEvents = data.events.map(ev => ({ ...ev, monthLabel: MONTHS[state.month - 1] }));
+    monthEvents.reverse().forEach(ev => state.events.unshift(ev));
   }
 
-  renderEquipment();
+  renderProtocolCards();
   renderMetrics();
+  renderPhaseBar();
   renderTimeControls();
   renderEvents();
 
@@ -1374,27 +1644,16 @@ function seekTo(e) {
 
 function resetState() {
   state.month = 0;
-  state.metrics = { quotes: 0, revCharlotte: 0, emergency: 0, revLost: 0, downtime: 0, responseTimes: [] };
   state.events = [];
-
-  equipment.forEach(eq => {
-    eq.signals = { vibration: [], temperature: [], pressure: [] };
-    eq.status = 'normal';
-    eq.detected = false;
-    eq.quoteSent = false;
-    eq.failed = false;
-    eq.runHours = {
-      'comp-1': 42680, 'comp-2': 61200, 'comp-3': 28400,
-      'comp-4': 37900, 'comp-5': 55100, 'comp-6': 44300
-    }[eq.id];
-  });
+  state.revenueHistory = { pricing: [], reactivation: [], crossref: [], lifecycle: [] };
 }
 
 function resetSimulation() {
   pause();
   resetState();
-  renderEquipment();
+  renderProtocolCards();
   renderMetrics();
+  renderPhaseBar();
   renderTimeControls();
   renderEvents();
 }
@@ -1408,13 +1667,15 @@ function startSimulation() {
 }
 
 function init() {
-  buildEquipmentCards();
-  renderEquipment();
+  buildProtocolCards();
+  renderProtocolCards();
   renderMetrics();
+  renderPhaseBar();
   renderTimeControls();
 
-  // Handle canvas resize
-  window.addEventListener('resize', () => renderEquipment());
+  window.addEventListener('resize', () => {
+    PROTOCOLS.forEach(proto => drawProtoChart(proto.id));
+  });
 }
 
 document.addEventListener('DOMContentLoaded', init);
