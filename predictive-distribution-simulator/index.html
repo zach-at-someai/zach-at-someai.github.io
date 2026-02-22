@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charlotte | Predictive Distribution Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #232324;
+  --surface: #2D2B2E;
+  --surface-variant: #3D3B3E;
+  --primary: #7200CB;
+  --primary-light: #AA66E0;
+  --secondary: #F000D2;
+  --tertiary: #21D6C6;
+  --error: #CE4F51;
+  --warning: #FFD93D;
+  --text-primary: #F2F2F3;
+  --text-secondary: #ECECEC;
+  --text-tertiary: #5B575E;
+  --glass-fill: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.12);
+  --glass-fill-hover: rgba(255,255,255,0.10);
+}
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  overflow: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .label { font-family: 'Oswald', sans-serif; }
+
+/* === LAYOUT === */
+#app {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  height: 100vh;
+  gap: 0;
+}
+
+/* === TOP BAR === */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  background: rgba(45,43,46,0.80);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--secondary), var(--primary), var(--tertiary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  color: white;
+}
+
+.brand h1 {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--text-primary);
+}
+
+.brand h1 span {
+  color: var(--text-tertiary);
+  font-weight: 400;
+  font-size: 14px;
+  margin-left: 8px;
+  letter-spacing: 0.5px;
+}
+
+/* === TIME CONTROLS === */
+.time-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 20px;
+  background: rgba(45,43,46,0.60);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.time-controls .btn-group {
+  display: flex;
+  gap: 6px;
+}
+
+.btn {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.btn:hover { background: var(--glass-fill-hover); border-color: rgba(255,255,255,0.2); }
+.btn.active { background: rgba(114,0,203,0.3); border-color: var(--primary-light); color: white; }
+.btn.primary-btn { background: rgba(114,0,203,0.4); border-color: var(--primary); }
+.btn.primary-btn:hover { background: rgba(114,0,203,0.6); }
+
+.play-btn {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 16px;
+}
+
+.play-btn.playing { background: rgba(206,79,81,0.3); border-color: var(--error); }
+
+.time-display {
+  font-family: 'Oswald', sans-serif;
+  font-size: 16px;
+  color: var(--text-secondary);
+  min-width: 120px;
+}
+
+.time-display strong { color: var(--tertiary); font-size: 18px; }
+
+.progress-track {
+  flex: 1;
+  height: 6px;
+  background: var(--surface-variant);
+  border-radius: 3px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--tertiary));
+  border-radius: 3px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: -4px;
+  width: 14px;
+  height: 14px;
+  background: var(--tertiary);
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 10px rgba(33,214,198,0.5);
+}
+
+.month-markers {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 4px;
+  margin-top: 2px;
+}
+
+.month-markers span {
+  font-size: 9px;
+  color: var(--text-tertiary);
+  font-family: 'Oswald', sans-serif;
+}
+
+.speed-btns { display: flex; gap: 4px; }
+
+.speed-btn {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  color: var(--text-tertiary);
+  width: 32px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  transition: all 0.2s ease;
+}
+
+.speed-btn:hover { color: var(--text-primary); }
+.speed-btn.active { background: rgba(114,0,203,0.3); border-color: var(--primary-light); color: var(--text-primary); }
+
+/* === MAIN CONTENT === */
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 0;
+  overflow: hidden;
+}
+
+/* === EQUIPMENT GRID === */
+.equipment-panel {
+  padding: 20px 24px;
+  overflow-y: auto;
+}
+
+.equipment-panel h2 {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.equipment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 14px;
+}
+
+/* === EQUIPMENT CARD === */
+.equipment-card {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 18px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.equipment-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 14px;
+  padding: 1px;
+  background: transparent;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  transition: background 0.4s ease;
+  pointer-events: none;
+}
+
+.equipment-card.warning { border-color: rgba(255,217,61,0.4); }
+.equipment-card.warning::before { background: linear-gradient(135deg, rgba(255,217,61,0.3), transparent); }
+
+.equipment-card.critical { border-color: rgba(206,79,81,0.5); }
+.equipment-card.critical::before { background: linear-gradient(135deg, rgba(206,79,81,0.4), transparent); }
+
+.equipment-card.detected {
+  border-color: rgba(33,214,198,0.5);
+  box-shadow: 0 0 30px rgba(33,214,198,0.15);
+}
+.equipment-card.detected::before { background: linear-gradient(135deg, rgba(33,214,198,0.3), transparent); }
+
+.equipment-card.quote-sent {
+  border-color: rgba(114,0,203,0.5);
+  box-shadow: 0 0 25px rgba(114,0,203,0.15);
+}
+.equipment-card.quote-sent::before { background: linear-gradient(135deg, rgba(114,0,203,0.3), transparent); }
+
+.equipment-card.failed {
+  border-color: rgba(206,79,81,0.6);
+  box-shadow: 0 0 30px rgba(206,79,81,0.2);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.card-header-left h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.card-header-left .location {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.status-badge {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.status-badge.normal { background: rgba(33,214,198,0.15); color: var(--tertiary); border: 1px solid rgba(33,214,198,0.3); }
+.status-badge.warning { background: rgba(255,217,61,0.15); color: var(--warning); border: 1px solid rgba(255,217,61,0.3); }
+.status-badge.critical { background: rgba(206,79,81,0.15); color: var(--error); border: 1px solid rgba(206,79,81,0.3); }
+.status-badge.detected { background: rgba(33,214,198,0.2); color: var(--tertiary); border: 1px solid rgba(33,214,198,0.4); }
+.status-badge.quote-sent { background: rgba(114,0,203,0.2); color: var(--primary-light); border: 1px solid rgba(114,0,203,0.4); }
+.status-badge.failed { background: rgba(206,79,81,0.25); color: #FF6B6B; border: 1px solid rgba(206,79,81,0.5); }
+
+.sparklines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sparkline-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sparkline-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  width: 72px;
+  text-transform: uppercase;
+}
+
+.sparkline-canvas {
+  flex: 1;
+  height: 32px;
+  border-radius: 4px;
+}
+
+.sparkline-value {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  width: 52px;
+  text-align: right;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--glass-border);
+}
+
+.card-footer .runtime {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.card-footer .next-service {
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.quote-banner {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  animation: slidein 0.4s ease;
+}
+
+.quote-banner.visible { display: flex; }
+
+.quote-banner.proactive {
+  background: rgba(114,0,203,0.15);
+  border: 1px solid rgba(114,0,203,0.3);
+  color: var(--primary-light);
+}
+
+.quote-banner.failure {
+  background: rgba(206,79,81,0.15);
+  border: 1px solid rgba(206,79,81,0.3);
+  color: #FF6B6B;
+}
+
+.quote-banner .icon { font-size: 16px; }
+.quote-banner .amount { font-weight: 600; font-family: 'Oswald', sans-serif; font-size: 14px; }
+
+@keyframes slidein {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(33,214,198,0.1); }
+  50% { box-shadow: 0 0 35px rgba(33,214,198,0.25); }
+}
+
+.equipment-card.detected { animation: pulse-glow 2s ease-in-out infinite; }
+
+/* === RIGHT PANEL === */
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--glass-border);
+  overflow: hidden;
+}
+
+/* === METRICS PANEL === */
+.metrics-panel {
+  padding: 20px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.metrics-panel h2 {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.metrics-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.metric-column {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 14px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.metric-column.charlotte {
+  border-color: rgba(33,214,198,0.25);
+  background: rgba(33,214,198,0.04);
+}
+
+.metric-column.without {
+  border-color: rgba(206,79,81,0.2);
+  background: rgba(206,79,81,0.03);
+}
+
+.metric-column h3 {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.metric-column.charlotte h3 { color: var(--tertiary); }
+.metric-column.without h3 { color: var(--error); }
+
+.metric-item {
+  margin-bottom: 10px;
+}
+
+.metric-item:last-child { margin-bottom: 0; }
+
+.metric-item .metric-label {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Oswald', sans-serif;
+}
+
+.metric-item .metric-value {
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.metric-column.charlotte .metric-value { color: var(--tertiary); }
+.metric-column.without .metric-value { color: var(--error); }
+
+.metric-item .metric-sub {
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+/* === TOTAL IMPACT === */
+.total-impact {
+  margin-top: 14px;
+  padding: 14px;
+  background: rgba(114,0,203,0.08);
+  border: 1px solid rgba(114,0,203,0.25);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.total-impact .label {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--primary-light);
+  margin-bottom: 4px;
+}
+
+.total-impact .value {
+  font-family: 'Oswald', sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--secondary), var(--primary-light), var(--tertiary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.total-impact .subtitle {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+
+/* === EVENT LOG === */
+.event-log {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.event-log h2 {
+  font-size: 14px;
+  color: var(--text-tertiary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.event-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  animation: slidein 0.3s ease;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.event-item .event-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.event-item .event-text { flex: 1; }
+
+.event-item .event-time {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.event-item.detection { border-color: rgba(33,214,198,0.3); }
+.event-item.quote { border-color: rgba(114,0,203,0.3); }
+.event-item.failure { border-color: rgba(206,79,81,0.3); }
+.event-item.info { border-color: var(--glass-border); }
+
+/* === INTRO OVERLAY === */
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(35,35,36,0.92);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: opacity 0.5s ease;
+}
+
+.intro-overlay.hidden { opacity: 0; pointer-events: none; }
+
+.intro-content {
+  text-align: center;
+  max-width: 520px;
+  padding: 40px;
+}
+
+.intro-content .intro-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--secondary), var(--primary), var(--tertiary));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 600;
+  font-size: 32px;
+  color: white;
+  margin: 0 auto 24px;
+  box-shadow: 0 0 60px rgba(114,0,203,0.3);
+}
+
+.intro-content h1 {
+  font-size: 36px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.intro-content .subtitle {
+  font-size: 16px;
+  color: var(--text-tertiary);
+  margin-bottom: 32px;
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 1px;
+}
+
+.intro-content p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+.start-btn {
+  background: linear-gradient(135deg, var(--primary), rgba(114,0,203,0.8));
+  border: 1px solid var(--primary-light);
+  color: white;
+  padding: 14px 40px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px;
+  letter-spacing: 2px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 30px rgba(114,0,203,0.3);
+}
+
+.start-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 50px rgba(114,0,203,0.5);
+}
+
+/* === RESET BUTTON === */
+.reset-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* === SCROLLBAR === */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface-variant); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }
+
+/* === RESPONSIVE === */
+@media (max-width: 1100px) {
+  .main-content { grid-template-columns: 1fr; }
+  .right-panel { border-left: none; border-top: 1px solid var(--glass-border); max-height: 320px; }
+  .equipment-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <!-- TOP BAR -->
+  <header class="top-bar">
+    <div class="brand">
+      <div class="brand-logo">C</div>
+      <h1>CHARLOTTE <span>Predictive Distribution Simulator</span></h1>
+    </div>
+    <div class="reset-section">
+      <button class="btn" onclick="resetSimulation()">RESET</button>
+    </div>
+  </header>
+
+  <!-- TIME CONTROLS -->
+  <div class="time-controls">
+    <div class="btn-group">
+      <button class="btn play-btn" id="playBtn" onclick="togglePlay()">&#9654;</button>
+    </div>
+    <div class="time-display">
+      Month <strong id="currentMonth">0</strong> of 12
+    </div>
+    <div style="flex:1">
+      <div class="progress-track" id="progressTrack" onclick="seekTo(event)">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+      <div class="month-markers">
+        <span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span><span>MAY</span><span>JUN</span>
+        <span>JUL</span><span>AUG</span><span>SEP</span><span>OCT</span><span>NOV</span><span>DEC</span>
+      </div>
+    </div>
+    <div class="speed-btns">
+      <button class="speed-btn active" data-speed="1" onclick="setSpeed(1,this)">1x</button>
+      <button class="speed-btn" data-speed="2" onclick="setSpeed(2,this)">2x</button>
+      <button class="speed-btn" data-speed="4" onclick="setSpeed(4,this)">4x</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <!-- Equipment Grid -->
+    <div class="equipment-panel">
+      <h2>Equipment Fleet — ISG Portfolio</h2>
+      <div class="equipment-grid" id="equipmentGrid"></div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+      <div class="metrics-panel">
+        <h2>Financial Impact</h2>
+        <div class="metrics-comparison">
+          <div class="metric-column charlotte">
+            <h3>With Charlotte</h3>
+            <div class="metric-item">
+              <div class="metric-label">Proactive Quotes</div>
+              <div class="metric-value" id="m-quotes">0</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-label">Revenue Captured</div>
+              <div class="metric-value" id="m-rev-charlotte">$0</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-label">Avg Response</div>
+              <div class="metric-value" id="m-response-charlotte">—</div>
+            </div>
+          </div>
+          <div class="metric-column without">
+            <h3>Without Charlotte</h3>
+            <div class="metric-item">
+              <div class="metric-label">Emergency Calls</div>
+              <div class="metric-value" id="m-emergency">0</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-label">Revenue Lost</div>
+              <div class="metric-value" id="m-rev-lost">$0</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-label">Downtime Hours</div>
+              <div class="metric-value" id="m-downtime">0</div>
+            </div>
+          </div>
+        </div>
+        <div class="total-impact">
+          <div class="label">Net Value Created</div>
+          <div class="value" id="m-total">$0</div>
+          <div class="subtitle">proactive revenue + avoided downtime costs</div>
+        </div>
+      </div>
+
+      <div class="event-log">
+        <h2>Activity Feed</h2>
+        <div class="event-list" id="eventList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INTRO OVERLAY -->
+<div class="intro-overlay" id="introOverlay">
+  <div class="intro-content">
+    <div class="intro-logo">C</div>
+    <h1>CHARLOTTE</h1>
+    <div class="subtitle">Predictive Distribution Simulator</div>
+    <p>
+      Watch Charlotte monitor a fleet of industrial compressors across ISG's portfolio.
+      As equipment signals drift from expected baselines, Charlotte detects deviation
+      early and generates proactive service quotes — before the customer even knows
+      there's a problem.
+    </p>
+    <button class="start-btn" onclick="startSimulation()">LAUNCH SIMULATOR</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURATION
+// ============================================================
+const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const TOTAL_MONTHS = 12;
+const TICK_MS = 2000; // base speed
+
+// ============================================================
+// EQUIPMENT DATA
+// ============================================================
+const equipment = [
+  {
+    id: 'comp-1',
+    name: 'Atlas Copco GA-90',
+    location: 'Refinery Alpha — Houston, TX',
+    brand: 'Midwest Air Solutions',
+    runHours: 42680,
+    signals: { vibration: [], temperature: [], pressure: [] },
+    baselines: { vibration: 4.2, temperature: 185, pressure: 125 },
+    units: { vibration: 'mm/s', temperature: '°F', pressure: 'PSI' },
+    driftStart: 7,      // month drift begins
+    driftRate: 0.6,     // how fast signals degrade per month
+    driftMetric: 'vibration',
+    detectMonth: 9,     // Charlotte detects
+    failMonth: 11,      // failure without Charlotte
+    quoteValue: 34000,
+    downtimeCost: 420000,
+    downtimeHours: 22,
+    status: 'normal',
+    detected: false,
+    quoteSent: false,
+    failed: false
+  },
+  {
+    id: 'comp-2',
+    name: 'Ingersoll Rand R-110',
+    location: 'Chemical Plant Beta — Lake Charles, LA',
+    brand: 'Gulf Coast Compressor',
+    runHours: 61200,
+    signals: { vibration: [], temperature: [], pressure: [] },
+    baselines: { vibration: 5.8, temperature: 195, pressure: 130 },
+    units: { vibration: 'mm/s', temperature: '°F', pressure: 'PSI' },
+    driftStart: 0,
+    driftRate: 1.2,
+    driftMetric: 'vibration',
+    detectMonth: 3,
+    failMonth: 5,
+    quoteValue: 52000,
+    downtimeCost: 890000,
+    downtimeHours: 36,
+    status: 'normal',
+    detected: false,
+    quoteSent: false,
+    failed: false
+  },
+  {
+    id: 'comp-3',
+    name: 'Sullair LS-20',
+    location: 'Manufacturing Gamma — Gary, IN',
+    brand: 'Great Lakes Industrial',
+    runHours: 28400,
+    signals: { vibration: [], temperature: [], pressure: [] },
+    baselines: { vibration: 3.1, temperature: 175, pressure: 118 },
+    units: { vibration: 'mm/s', temperature: '°F', pressure: 'PSI' },
+    driftStart: 99,     // never drifts
+    driftRate: 0,
+    driftMetric: 'vibration',
+    detectMonth: 99,
+    failMonth: 99,
+    quoteValue: 0,
+    downtimeCost: 0,
+    downtimeHours: 0,
+    status: 'normal',
+    detected: false,
+    quoteSent: false,
+    failed: false
+  },
+  {
+    id: 'comp-4',
+    name: 'Kaeser CSD-75',
+    location: 'Food Processing Delta — Columbus, OH',
+    brand: 'Buckeye Compressed Air',
+    runHours: 37900,
+    signals: { vibration: [], temperature: [], pressure: [] },
+    baselines: { vibration: 3.8, temperature: 180, pressure: 122 },
+    units: { vibration: 'mm/s', temperature: '°F', pressure: 'PSI' },
+    driftStart: 3,
+    driftRate: 0.5,
+    driftMetric: 'temperature',
+    detectMonth: 6,
+    failMonth: 9,
+    quoteValue: 28000,
+    downtimeCost: 310000,
+    downtimeHours: 18,
+    status: 'normal',
+    detected: false,
+    quoteSent: false,
+    failed: false
+  },
+  {
+    id: 'comp-5',
+    name: 'Quincy QGD-40',
+    location: 'Steel Mill Epsilon — Birmingham, AL',
+    brand: 'Southern Compressor Group',
+    runHours: 55100,
+    signals: { vibration: [], temperature: [], pressure: [] },
+    baselines: { vibration: 6.1, temperature: 200, pressure: 140 },
+    units: { vibration: 'mm/s', temperature: '°F', pressure: 'PSI' },
+    driftStart: 1,
+    driftRate: 1.8,
+    driftMetric: 'pressure',
+    detectMonth: 3,
+    failMonth: 4,
+    quoteValue: 85000,
+    downtimeCost: 2100000,
+    downtimeHours: 48,
+    status: 'normal',
+    detected: false,
+    quoteSent: false,
+    failed: false
+  },
+  {
+    id: 'comp-6',
+    name: 'Gardner Denver L-55',
+    location: 'Pharma Zeta — Research Triangle, NC',
+    brand: 'Atlantic Air Systems',
+    runHours: 44300,
+    signals: { vibration: [], temperature: [], pressure: [] },
+    baselines: { vibration: 4.5, temperature: 178, pressure: 120 },
+    units: { vibration: 'mm/s', temperature: '°F', pressure: 'PSI' },
+    driftStart: 4,
+    driftRate: 0.35,
+    driftMetric: 'temperature',
+    detectMonth: 7,
+    failMonth: 10,
+    quoteValue: 41000,
+    downtimeCost: 560000,
+    downtimeHours: 14,
+    status: 'normal',
+    detected: false,
+    quoteSent: false,
+    failed: false
+  }
+];
+
+// ============================================================
+// SIMULATION STATE
+// ============================================================
+let state = {
+  month: 0,
+  playing: false,
+  speed: 1,
+  timer: null,
+  metrics: {
+    quotes: 0,
+    revCharlotte: 0,
+    emergency: 0,
+    revLost: 0,
+    downtime: 0,
+    responseTimes: []
+  },
+  events: []
+};
+
+// ============================================================
+// SIGNAL GENERATION
+// ============================================================
+function generateSignal(eq, metric, month) {
+  const base = eq.baselines[metric];
+  const noise = (Math.random() - 0.5) * base * 0.04;
+
+  let drift = 0;
+  if (metric === eq.driftMetric && month >= eq.driftStart) {
+    const monthsInDrift = month - eq.driftStart;
+    drift = eq.driftRate * Math.pow(monthsInDrift, 1.3);
+  }
+
+  // secondary metrics get mild sympathetic drift
+  if (metric !== eq.driftMetric && month >= eq.driftStart + 2) {
+    const monthsIn = month - eq.driftStart - 2;
+    drift = eq.driftRate * 0.15 * monthsIn;
+  }
+
+  return base + drift + noise;
+}
+
+function generateAllSignals(month) {
+  equipment.forEach(eq => {
+    ['vibration', 'temperature', 'pressure'].forEach(metric => {
+      const value = generateSignal(eq, metric, month);
+      eq.signals[metric].push(value);
+    });
+    eq.runHours += Math.round(500 + Math.random() * 220);
+  });
+}
+
+// ============================================================
+// DETECTION & EVENTS
+// ============================================================
+function checkDetections(month) {
+  equipment.forEach(eq => {
+    if (eq.detectMonth === 99) return;
+
+    // Charlotte detection
+    if (month === eq.detectMonth && !eq.detected) {
+      eq.detected = true;
+      eq.status = 'detected';
+      const metric = eq.driftMetric;
+      const current = eq.signals[metric][eq.signals[metric].length - 1];
+      const base = eq.baselines[metric];
+      const pctDrift = (((current - base) / base) * 100).toFixed(1);
+      addEvent('detection', `Charlotte detected ${pctDrift}% ${metric} drift on ${eq.name} at ${eq.location.split('—')[0].trim()}`, month);
+    }
+
+    // Proactive quote (1 month after detection)
+    if (month === eq.detectMonth + 1 && !eq.quoteSent) {
+      eq.quoteSent = true;
+      eq.status = 'quote-sent';
+      state.metrics.quotes++;
+      state.metrics.revCharlotte += eq.quoteValue;
+      state.metrics.responseTimes.push(eq.detectMonth - eq.driftStart);
+      addEvent('quote', `Proactive service quote sent: $${eq.quoteValue.toLocaleString()} — ${eq.name}. Customer scheduled maintenance before failure.`, month);
+    }
+
+    // Failure (without Charlotte) — tracked for comparison
+    if (month === eq.failMonth) {
+      state.metrics.emergency++;
+      state.metrics.revLost += eq.downtimeCost;
+      state.metrics.downtime += eq.downtimeHours;
+      if (!eq.quoteSent) {
+        eq.failed = true;
+        eq.status = 'failed';
+        addEvent('failure', `WITHOUT CHARLOTTE: ${eq.name} failed. ${eq.downtimeHours}h unplanned downtime. Emergency repair cost: $${eq.downtimeCost.toLocaleString()}`, month);
+      } else {
+        addEvent('info', `${eq.name} would have failed this month without Charlotte. Proactive service prevented $${eq.downtimeCost.toLocaleString()} in downtime costs.`, month);
+      }
+    }
+
+    // Warning state (between drift start and detection)
+    if (month >= eq.driftStart + 1 && !eq.detected && eq.status === 'normal') {
+      const metric = eq.driftMetric;
+      const current = eq.signals[metric][eq.signals[metric].length - 1];
+      const base = eq.baselines[metric];
+      const pctDrift = ((current - base) / base) * 100;
+      if (pctDrift > 8) {
+        eq.status = 'critical';
+      } else if (pctDrift > 3) {
+        eq.status = 'warning';
+      }
+    }
+  });
+}
+
+function addEvent(type, text, month) {
+  state.events.unshift({ type, text, month });
+  renderEvents();
+}
+
+// ============================================================
+// RENDERING
+// ============================================================
+function buildEquipmentCards() {
+  const grid = document.getElementById('equipmentGrid');
+  grid.innerHTML = '';
+  equipment.forEach(eq => {
+    const card = document.createElement('div');
+    card.className = 'equipment-card';
+    card.id = `card-${eq.id}`;
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-header-left">
+          <h3>${eq.name}</h3>
+          <div class="location">${eq.location}</div>
+        </div>
+        <div class="status-badge normal" id="badge-${eq.id}">NORMAL</div>
+      </div>
+      <div class="sparklines">
+        <div class="sparkline-row">
+          <span class="sparkline-label">Vibration</span>
+          <canvas class="sparkline-canvas" id="spark-${eq.id}-vibration" height="32"></canvas>
+          <span class="sparkline-value" id="val-${eq.id}-vibration">—</span>
+        </div>
+        <div class="sparkline-row">
+          <span class="sparkline-label">Temperature</span>
+          <canvas class="sparkline-canvas" id="spark-${eq.id}-temperature" height="32"></canvas>
+          <span class="sparkline-value" id="val-${eq.id}-temperature">—</span>
+        </div>
+        <div class="sparkline-row">
+          <span class="sparkline-label">Pressure</span>
+          <canvas class="sparkline-canvas" id="spark-${eq.id}-pressure" height="32"></canvas>
+          <span class="sparkline-value" id="val-${eq.id}-pressure">—</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="runtime" id="hours-${eq.id}">${eq.runHours.toLocaleString()} run hours</span>
+        <span class="next-service">${eq.brand}</span>
+      </div>
+      <div class="quote-banner" id="banner-${eq.id}">
+        <span class="icon"></span>
+        <span class="banner-text"></span>
+        <span class="amount"></span>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function renderEquipment() {
+  equipment.forEach(eq => {
+    const card = document.getElementById(`card-${eq.id}`);
+    const badge = document.getElementById(`badge-${eq.id}`);
+    const banner = document.getElementById(`banner-${eq.id}`);
+
+    // Status
+    card.className = `equipment-card ${eq.status}`;
+    badge.className = `status-badge ${eq.status}`;
+
+    const statusLabels = {
+      normal: 'NORMAL',
+      warning: 'DRIFTING',
+      critical: 'CRITICAL',
+      detected: 'DETECTED',
+      'quote-sent': 'QUOTE SENT',
+      failed: 'FAILED'
+    };
+    badge.textContent = statusLabels[eq.status] || 'NORMAL';
+
+    // Run hours
+    document.getElementById(`hours-${eq.id}`).textContent = `${eq.runHours.toLocaleString()} run hours`;
+
+    // Sparklines
+    ['vibration', 'temperature', 'pressure'].forEach(metric => {
+      drawSparkline(eq, metric);
+      const vals = eq.signals[metric];
+      const valEl = document.getElementById(`val-${eq.id}-${metric}`);
+      if (vals.length > 0) {
+        const v = vals[vals.length - 1];
+        valEl.textContent = metric === 'vibration' ? v.toFixed(1) + ' mm/s' :
+                           metric === 'temperature' ? Math.round(v) + '°F' :
+                           Math.round(v) + ' PSI';
+        // Color based on drift
+        const base = eq.baselines[metric];
+        const pctDrift = Math.abs((v - base) / base) * 100;
+        if (pctDrift > 10) valEl.style.color = '#CE4F51';
+        else if (pctDrift > 5) valEl.style.color = '#FFD93D';
+        else valEl.style.color = 'var(--text-secondary)';
+      }
+    });
+
+    // Banner
+    if (eq.quoteSent) {
+      banner.className = 'quote-banner proactive visible';
+      banner.querySelector('.icon').textContent = '✓';
+      banner.querySelector('.banner-text').textContent = 'Proactive quote sent — service scheduled';
+      banner.querySelector('.amount').textContent = `$${eq.quoteValue.toLocaleString()}`;
+    } else if (eq.failed) {
+      banner.className = 'quote-banner failure visible';
+      banner.querySelector('.icon').textContent = '✕';
+      banner.querySelector('.banner-text').textContent = `Emergency failure — ${eq.downtimeHours}h downtime`;
+      banner.querySelector('.amount').textContent = `-$${eq.downtimeCost.toLocaleString()}`;
+    } else {
+      banner.className = 'quote-banner';
+    }
+  });
+}
+
+function drawSparkline(eq, metric) {
+  const canvas = document.getElementById(`spark-${eq.id}-${metric}`);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = canvas.offsetWidth * dpr;
+  canvas.height = canvas.offsetHeight * dpr;
+  ctx.scale(dpr, dpr);
+
+  const w = canvas.offsetWidth;
+  const h = canvas.offsetHeight;
+  const data = eq.signals[metric];
+  if (data.length < 2) { ctx.clearRect(0,0,w,h); return; }
+
+  const base = eq.baselines[metric];
+  const threshold = base * 1.12;
+  const allVals = data.concat([base * 0.92, base * 1.25]);
+  const min = Math.min(...allVals);
+  const max = Math.max(...allVals);
+  const range = max - min || 1;
+
+  ctx.clearRect(0, 0, w, h);
+
+  // Expected range band
+  const bandTop = h - ((base * 1.05 - min) / range) * h;
+  const bandBot = h - ((base * 0.95 - min) / range) * h;
+  ctx.fillStyle = 'rgba(33,214,198,0.06)';
+  ctx.fillRect(0, bandTop, w, bandBot - bandTop);
+
+  // Threshold line
+  const threshY = h - ((threshold - min) / range) * h;
+  ctx.strokeStyle = 'rgba(206,79,81,0.25)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4,4]);
+  ctx.beginPath();
+  ctx.moveTo(0, threshY);
+  ctx.lineTo(w, threshY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Signal line
+  const stepX = w / (TOTAL_MONTHS - 1);
+  ctx.beginPath();
+  data.forEach((v, i) => {
+    const x = i * stepX;
+    const y = h - ((v - min) / range) * h;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  });
+
+  const lastVal = data[data.length - 1];
+  const pctDrift = ((lastVal - base) / base) * 100;
+  if (pctDrift > 10) ctx.strokeStyle = '#CE4F51';
+  else if (pctDrift > 5) ctx.strokeStyle = '#FFD93D';
+  else ctx.strokeStyle = '#21D6C6';
+
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Latest point dot
+  if (data.length > 0) {
+    const lastX = (data.length - 1) * stepX;
+    const lastY = h - ((lastVal - min) / range) * h;
+    ctx.beginPath();
+    ctx.arc(lastX, lastY, 3, 0, Math.PI * 2);
+    ctx.fillStyle = ctx.strokeStyle;
+    ctx.fill();
+  }
+}
+
+function renderMetrics() {
+  const m = state.metrics;
+  document.getElementById('m-quotes').textContent = m.quotes;
+  document.getElementById('m-rev-charlotte').textContent = '$' + m.revCharlotte.toLocaleString();
+  document.getElementById('m-emergency').textContent = m.emergency;
+  document.getElementById('m-rev-lost').textContent = '$' + m.revLost.toLocaleString();
+  document.getElementById('m-downtime').textContent = m.downtime;
+
+  if (m.responseTimes.length > 0) {
+    const avg = (m.responseTimes.reduce((a,b) => a+b, 0) / m.responseTimes.length).toFixed(1);
+    document.getElementById('m-response-charlotte').textContent = avg + ' mo early';
+  }
+
+  const total = m.revCharlotte + m.revLost; // revenue captured + downtime avoided
+  document.getElementById('m-total').textContent = '$' + total.toLocaleString();
+}
+
+function renderEvents() {
+  const list = document.getElementById('eventList');
+  list.innerHTML = '';
+  state.events.slice(0, 30).forEach(ev => {
+    const item = document.createElement('div');
+    item.className = `event-item ${ev.type}`;
+    const icons = { detection: '◉', quote: '▶', failure: '✕', info: '○' };
+    item.innerHTML = `
+      <span class="event-icon">${icons[ev.type] || '○'}</span>
+      <span class="event-text">${ev.text}</span>
+      <span class="event-time">${MONTHS[ev.month]}</span>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function renderTimeControls() {
+  document.getElementById('currentMonth').textContent = state.month;
+  const pct = (state.month / TOTAL_MONTHS) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  const playBtn = document.getElementById('playBtn');
+  playBtn.innerHTML = state.playing ? '&#9646;&#9646;' : '&#9654;';
+  playBtn.className = state.playing ? 'btn play-btn playing' : 'btn play-btn';
+}
+
+// ============================================================
+// SIMULATION ENGINE
+// ============================================================
+function tick() {
+  if (state.month >= TOTAL_MONTHS) {
+    pause();
+    return;
+  }
+
+  state.month++;
+  generateAllSignals(state.month);
+  checkDetections(state.month);
+
+  // Month start event
+  if (state.month === 1) {
+    addEvent('info', 'Charlotte monitoring initiated. Establishing baselines across ISG fleet.', state.month);
+  }
+
+  renderEquipment();
+  renderMetrics();
+  renderTimeControls();
+}
+
+function play() {
+  if (state.month >= TOTAL_MONTHS) return;
+  state.playing = true;
+  renderTimeControls();
+  state.timer = setInterval(tick, TICK_MS / state.speed);
+}
+
+function pause() {
+  state.playing = false;
+  clearInterval(state.timer);
+  state.timer = null;
+  renderTimeControls();
+}
+
+function togglePlay() {
+  if (state.playing) pause(); else play();
+}
+
+function setSpeed(speed, btn) {
+  state.speed = speed;
+  document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (state.playing) {
+    clearInterval(state.timer);
+    state.timer = setInterval(tick, TICK_MS / state.speed);
+  }
+}
+
+function seekTo(e) {
+  const track = document.getElementById('progressTrack');
+  const rect = track.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+  const targetMonth = Math.round(pct * TOTAL_MONTHS);
+
+  const wasPlaying = state.playing;
+  if (wasPlaying) pause();
+
+  // Reset and replay to target month
+  resetState();
+  for (let i = 0; i < targetMonth; i++) {
+    state.month++;
+    generateAllSignals(state.month);
+    checkDetections(state.month);
+  }
+  if (state.month === 0) {
+    addEvent('info', 'Charlotte monitoring initiated. Establishing baselines across ISG fleet.', 0);
+  }
+
+  renderEquipment();
+  renderMetrics();
+  renderTimeControls();
+  renderEvents();
+
+  if (wasPlaying && state.month < TOTAL_MONTHS) play();
+}
+
+function resetState() {
+  state.month = 0;
+  state.metrics = { quotes: 0, revCharlotte: 0, emergency: 0, revLost: 0, downtime: 0, responseTimes: [] };
+  state.events = [];
+
+  equipment.forEach(eq => {
+    eq.signals = { vibration: [], temperature: [], pressure: [] };
+    eq.status = 'normal';
+    eq.detected = false;
+    eq.quoteSent = false;
+    eq.failed = false;
+    eq.runHours = {
+      'comp-1': 42680, 'comp-2': 61200, 'comp-3': 28400,
+      'comp-4': 37900, 'comp-5': 55100, 'comp-6': 44300
+    }[eq.id];
+  });
+}
+
+function resetSimulation() {
+  pause();
+  resetState();
+  renderEquipment();
+  renderMetrics();
+  renderTimeControls();
+  renderEvents();
+}
+
+// ============================================================
+// INTRO & INIT
+// ============================================================
+function startSimulation() {
+  document.getElementById('introOverlay').classList.add('hidden');
+  setTimeout(() => play(), 600);
+}
+
+function init() {
+  buildEquipmentCards();
+  renderEquipment();
+  renderMetrics();
+  renderTimeControls();
+
+  // Handle canvas resize
+  window.addEventListener('resize', () => renderEquipment());
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

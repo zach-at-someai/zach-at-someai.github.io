@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Charlotte | Enterprise Integration Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #232324;
+  --surface: #2D2B2E;
+  --surface-variant: #3D3B3E;
+  --primary: #7200CB;
+  --primary-light: #AA66E0;
+  --secondary: #F000D2;
+  --tertiary: #21D6C6;
+  --error: #CE4F51;
+  --warning: #FFD93D;
+  --text-primary: #F2F2F3;
+  --text-secondary: #ECECEC;
+  --text-tertiary: #5B575E;
+  --glass-fill: rgba(255,255,255,0.06);
+  --glass-border: rgba(255,255,255,0.12);
+}
+html, body { height: 100%; background: var(--bg); color: var(--text-primary); font-family: 'Inter', sans-serif; overflow: hidden; }
+h1, h2, h3, h4, .label { font-family: 'Oswald', sans-serif; }
+
+#app { height: 100vh; display: flex; flex-direction: column; }
+
+.top-bar {
+  display: flex; align-items: center; padding: 16px 28px;
+  background: rgba(45,43,46,0.80); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border); gap: 14px; flex-shrink: 0;
+}
+.brand-logo {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--secondary), var(--primary), var(--tertiary));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Oswald'; font-weight: 600; font-size: 18px; color: white;
+}
+.top-bar h1 { font-size: 20px; font-weight: 500; letter-spacing: 1px; }
+.top-bar h1 span { color: var(--text-tertiary); font-weight: 400; font-size: 14px; margin-left: 8px; }
+
+.main { flex: 1; position: relative; overflow: hidden; }
+canvas#arch { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* === HOVER TOOLTIP === */
+.tooltip {
+  position: absolute; padding: 12px 16px; background: rgba(45,43,46,0.92);
+  backdrop-filter: blur(20px); border: 1px solid var(--glass-border);
+  border-radius: 10px; pointer-events: none; opacity: 0;
+  transition: opacity 0.2s ease; max-width: 280px; z-index: 20;
+  font-size: 12px; line-height: 1.5;
+}
+.tooltip.visible { opacity: 1; }
+.tooltip h4 { font-size: 14px; margin-bottom: 4px; }
+.tooltip .t-sub { color: var(--text-tertiary); font-size: 11px; font-family: 'Oswald'; letter-spacing: 0.5px; margin-bottom: 6px; }
+.tooltip p { color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top-bar">
+    <div class="brand-logo">C</div>
+    <h1>CHARLOTTE <span>Enterprise Integration Architecture</span></h1>
+  </header>
+  <div class="main">
+    <canvas id="arch"></canvas>
+    <div class="tooltip" id="tooltip">
+      <h4 id="ttTitle"></h4>
+      <div class="t-sub" id="ttSub"></div>
+      <p id="ttDesc"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// ARCHITECTURE DATA
+// ============================================================
+
+// Layer 1: Enterprise Data Sources (bottom)
+const sources = [
+  { id: 'erp', label: 'ERP Systems', icon: '📊', color: '#2196F3',
+    sub: 'SAP, Oracle, NetSuite',
+    desc: 'Transaction history, purchase orders, invoicing, and financial data flow into Charlotte as timestamped signals.' },
+  { id: 'crm', label: 'CRM', icon: '👥', color: '#9C27B0',
+    sub: 'Salesforce, HubSpot',
+    desc: 'Customer interactions, quotes, contracts, and relationship data become edges and signals in the graph.' },
+  { id: 'iot', label: 'IoT Sensors', icon: '📡', color: '#FF9800',
+    sub: 'Vibration, Temp, Pressure',
+    desc: 'Real-time equipment telemetry streams directly into Charlotte as continuous signals on equipment nodes.' },
+  { id: 'field', label: 'Field Service', icon: '🔧', color: '#4CAF50',
+    sub: 'ServiceMax, FieldEdge',
+    desc: 'Technician visits, service reports, part replacements, and inspection data captured as signals with source tagging.' },
+  { id: 'inventory', label: 'Inventory', icon: '📦', color: '#00BCD4',
+    sub: 'Warehouse & Distribution',
+    desc: 'Stock levels, reorder events, cross-branch transfers, and demand patterns across all ISG brands.' },
+  { id: 'tribal', label: 'Tribal Knowledge', icon: '🧠', color: '#E91E63',
+    sub: 'Voice, Notes, Expertise',
+    desc: 'Veteran expertise captured via voice input and natural language — formalized into signals and protocols permanently.' },
+];
+
+// Layer 2: Charlotte Substrate (middle)
+const substrate = {
+  label: 'CHARLOTTE SUBSTRATE',
+  sub: 'Infrastructure for Observable Reality',
+  primitives: [
+    { name: 'NODE', color: '#AA66E0', desc: 'Identities: equipment, customers, facilities, technicians' },
+    { name: 'SIGNAL', color: '#F000D2', desc: 'Every observation is an append-only, timestamped fact' },
+    { name: 'METRIC', color: '#21D6C6', desc: 'Measurable dimensions: vibration, temperature, spend' },
+    { name: 'EDGE', color: '#FFD93D', desc: 'Relationships: INSTALLED_AT, SERVICED_BY, SUPPLIES' },
+    { name: 'PROTOCOL', color: '#64B5F6', desc: 'Expectations: maintenance schedules, reorder cycles' },
+  ],
+  engines: [
+    { name: 'Deviation Detection', desc: 'Compares real signals to protocol expectations and flags drift' },
+    { name: 'Graph Traversal', desc: 'Navigates relationships to surface cross-brand intelligence' },
+    { name: 'Signal Density Analysis', desc: 'Completed lifecycles become training data for prediction' },
+  ]
+};
+
+// Layer 3: Intelligence Outputs (top)
+const outputs = [
+  { id: 'predict', label: 'Predictive Distribution', icon: '🎯', color: '#21D6C6',
+    sub: 'Proactive Reorders & Quotes',
+    desc: 'Charlotte identifies equipment approaching end-of-life and triggers proactive service quotes before the customer calls.' },
+  { id: 'deviation', label: 'Deviation Alerts', icon: '⚡', color: '#FFD93D',
+    sub: 'Early Warning System',
+    desc: 'Real-time detection of signal drift from expected baselines across the entire equipment fleet.' },
+  { id: 'marketplace', label: 'Parts Intelligence', icon: '🏪', color: '#AA66E0',
+    sub: 'Cross-Brand Marketplace',
+    desc: 'Unified view of parts, pricing, and availability across all 16+ ISG brands with interchangeability data.' },
+  { id: 'agent', label: 'AI Agent', icon: '💬', color: '#F000D2',
+    sub: 'Natural Language Queries',
+    desc: 'Ask questions about equipment history, service patterns, and recommendations in plain English.' },
+  { id: 'reports', label: 'Executive Intelligence', icon: '📈', color: '#2196F3',
+    sub: 'Portfolio-Wide Insights',
+    desc: 'Cross-brand performance metrics, acquisition target evaluation, and 3-year event horizon navigation.' },
+];
+
+// ============================================================
+// CANVAS
+// ============================================================
+const canvas = document.getElementById('arch');
+const ctx = canvas.getContext('2d');
+let W, H, dpr;
+let animT = 0;
+let hoverItem = null;
+let hitBoxes = [];
+
+function resize() {
+  dpr = window.devicePixelRatio || 1;
+  W = canvas.parentElement.clientWidth;
+  H = canvas.parentElement.clientHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + 'px';
+  canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+// ============================================================
+// LAYOUT COMPUTATION
+// ============================================================
+function getLayout() {
+  const pad = 40;
+  const layerH = (H - pad * 2) / 5;
+
+  // Source boxes (bottom)
+  const srcY = H - pad - layerH * 0.5;
+  const srcW = Math.min(130, (W - pad * 2 - (sources.length - 1) * 16) / sources.length);
+  const srcH = 72;
+  const srcTotalW = sources.length * srcW + (sources.length - 1) * 16;
+  const srcStartX = (W - srcTotalW) / 2;
+  const srcBoxes = sources.map((s, i) => ({
+    ...s, type: 'source',
+    x: srcStartX + i * (srcW + 16),
+    y: srcY - srcH / 2,
+    w: srcW, h: srcH,
+    cx: srcStartX + i * (srcW + 16) + srcW / 2,
+    cy: srcY
+  }));
+
+  // Charlotte substrate (middle)
+  const subY = H / 2;
+  const subW = Math.min(W - pad * 2, 760);
+  const subH = layerH * 1.4;
+  const subBox = {
+    x: (W - subW) / 2,
+    y: subY - subH / 2,
+    w: subW, h: subH,
+    cx: W / 2, cy: subY
+  };
+
+  // Primitive chips inside substrate
+  const primW = 90;
+  const primH = 30;
+  const primTotalW = substrate.primitives.length * primW + (substrate.primitives.length - 1) * 10;
+  const primStartX = (W - primTotalW) / 2;
+  const primY = subY - 12;
+  const primBoxes = substrate.primitives.map((p, i) => ({
+    ...p, type: 'primitive',
+    x: primStartX + i * (primW + 10),
+    y: primY - primH / 2,
+    w: primW, h: primH,
+    cx: primStartX + i * (primW + 10) + primW / 2,
+    cy: primY
+  }));
+
+  // Engine labels
+  const engY = subY + subH * 0.28;
+  const engBoxes = substrate.engines.map((e, i) => ({
+    ...e, type: 'engine',
+    cx: subBox.x + subW * (0.22 + i * 0.28),
+    cy: engY
+  }));
+
+  // Output boxes (top)
+  const outY = pad + layerH * 0.6;
+  const outW = Math.min(130, (W - pad * 2 - (outputs.length - 1) * 16) / outputs.length);
+  const outH = 72;
+  const outTotalW = outputs.length * outW + (outputs.length - 1) * 16;
+  const outStartX = (W - outTotalW) / 2;
+  const outBoxes = outputs.map((o, i) => ({
+    ...o, type: 'output',
+    x: outStartX + i * (outW + 16),
+    y: outY - outH / 2,
+    w: outW, h: outH,
+    cx: outStartX + i * (outW + 16) + outW / 2,
+    cy: outY
+  }));
+
+  return { srcBoxes, subBox, primBoxes, engBoxes, outBoxes };
+}
+
+// ============================================================
+// DRAWING
+// ============================================================
+function draw() {
+  animT += 0.006;
+  ctx.clearRect(0, 0, W, H);
+  hitBoxes = [];
+
+  const layout = getLayout();
+  drawGrid();
+  drawLayerLabels(layout);
+  drawConnections(layout);
+  drawSubstrate(layout);
+  drawSourceBoxes(layout.srcBoxes);
+  drawOutputBoxes(layout.outBoxes);
+  drawPrimitives(layout.primBoxes);
+  drawEngines(layout.engBoxes);
+  drawFlowArrows(layout);
+
+  requestAnimationFrame(draw);
+}
+
+function drawGrid() {
+  ctx.strokeStyle = 'rgba(255,255,255,0.015)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < W; i += 50) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, H); ctx.stroke(); }
+  for (let i = 0; i < H; i += 50) { ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(W, i); ctx.stroke(); }
+}
+
+function drawLayerLabels(layout) {
+  ctx.font = '600 11px Oswald';
+  ctx.letterSpacing = '2px';
+  ctx.textAlign = 'left';
+
+  // Source layer label
+  ctx.fillStyle = 'rgba(242,242,243,0.15)';
+  ctx.fillText('ENTERPRISE DATA SOURCES', 28, layout.srcBoxes[0].y - 16);
+
+  // Output layer label
+  ctx.fillText('INTELLIGENCE OUTPUTS', 28, layout.outBoxes[0].y - 16);
+}
+
+function drawConnections(layout) {
+  const { srcBoxes, subBox, outBoxes } = layout;
+
+  // Sources → Substrate
+  srcBoxes.forEach(s => {
+    drawFlowLine(s.cx, s.y, s.cx, subBox.y + subBox.h, s.color, 0.1);
+    drawParticles(s.cx, s.y, s.cx, subBox.y + subBox.h, s.color, 2, true);
+  });
+
+  // Substrate → Outputs
+  outBoxes.forEach(o => {
+    drawFlowLine(o.cx, subBox.y, o.cx, o.y + o.h, o.color, 0.1);
+    drawParticles(o.cx, subBox.y, o.cx, o.y + o.h, o.color, 2, false);
+  });
+}
+
+function drawFlowLine(x1, y1, x2, y2, color, alpha) {
+  ctx.strokeStyle = hexToRGBA(color, alpha);
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+}
+
+function drawParticles(x1, y1, x2, y2, color, count, down) {
+  for (let p = 0; p < count; p++) {
+    let t = ((animT * 0.8 + p / count) % 1);
+    if (!down) t = 1 - t;
+    const px = x1 + (x2 - x1) * t;
+    const py = y1 + (y2 - y1) * t;
+    const alpha = 0.6 * Math.sin(t * Math.PI);
+    ctx.beginPath();
+    ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = hexToRGBA(color, alpha);
+    ctx.fill();
+  }
+}
+
+function drawSubstrate(layout) {
+  const { subBox } = layout;
+  const r = 16;
+
+  // Outer glow
+  const glow = ctx.createRadialGradient(subBox.cx, subBox.cy, subBox.w * 0.1, subBox.cx, subBox.cy, subBox.w * 0.6);
+  glow.addColorStop(0, 'rgba(114,0,203,0.06)');
+  glow.addColorStop(1, 'rgba(114,0,203,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, subBox.y - 40, W, subBox.h + 80);
+
+  // Glass box
+  roundRect(subBox.x, subBox.y, subBox.w, subBox.h, r);
+  ctx.fillStyle = 'rgba(45,43,46,0.5)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Gradient border top
+  const grad = ctx.createLinearGradient(subBox.x, subBox.y, subBox.x + subBox.w, subBox.y);
+  grad.addColorStop(0, 'rgba(240,0,210,0.3)');
+  grad.addColorStop(0.5, 'rgba(114,0,203,0.4)');
+  grad.addColorStop(1, 'rgba(33,214,198,0.3)');
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(subBox.x + r, subBox.y);
+  ctx.lineTo(subBox.x + subBox.w - r, subBox.y);
+  ctx.stroke();
+
+  // Gradient border bottom
+  ctx.beginPath();
+  ctx.moveTo(subBox.x + r, subBox.y + subBox.h);
+  ctx.lineTo(subBox.x + subBox.w - r, subBox.y + subBox.h);
+  ctx.stroke();
+
+  // Title
+  ctx.font = '700 18px Oswald';
+  ctx.fillStyle = '#F2F2F3';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('CHARLOTTE SUBSTRATE', subBox.cx, subBox.y + 28);
+
+  ctx.font = '400 12px Oswald';
+  ctx.fillStyle = 'rgba(242,242,243,0.35)';
+  ctx.fillText('Infrastructure for Observable Reality', subBox.cx, subBox.y + 48);
+
+  // "Append-Only • Time-Aligned • Graph-Native" tag
+  ctx.font = '400 10px Oswald';
+  ctx.fillStyle = 'rgba(242,242,243,0.2)';
+  ctx.fillText('APPEND-ONLY  •  TIME-ALIGNED  •  GRAPH-NATIVE  •  DOMAIN-AGNOSTIC', subBox.cx, subBox.y + subBox.h - 16);
+}
+
+function drawSourceBoxes(boxes) {
+  boxes.forEach(b => {
+    const isHover = hoverItem && hoverItem.id === b.id;
+    const r = 10;
+
+    roundRect(b.x, b.y, b.w, b.h, r);
+    ctx.fillStyle = isHover ? hexToRGBA(b.color, 0.1) : 'rgba(45,43,46,0.6)';
+    ctx.fill();
+    ctx.strokeStyle = isHover ? hexToRGBA(b.color, 0.5) : 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = isHover ? 1.5 : 1;
+    ctx.stroke();
+
+    // Icon
+    ctx.font = `${Math.min(22, b.w * 0.18)}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(b.icon, b.cx, b.cy - 10);
+
+    // Label
+    ctx.font = `500 ${Math.min(11, b.w * 0.09)}px Oswald`;
+    ctx.fillStyle = isHover ? b.color : '#F2F2F3';
+    ctx.fillText(b.label, b.cx, b.cy + 12);
+
+    // Up arrow
+    ctx.font = '10px sans-serif';
+    ctx.fillStyle = hexToRGBA(b.color, 0.4);
+    ctx.fillText('▲', b.cx, b.y - 6);
+
+    hitBoxes.push({ ...b, type: 'source' });
+  });
+}
+
+function drawOutputBoxes(boxes) {
+  boxes.forEach(b => {
+    const isHover = hoverItem && hoverItem.id === b.id;
+    const r = 10;
+
+    roundRect(b.x, b.y, b.w, b.h, r);
+    ctx.fillStyle = isHover ? hexToRGBA(b.color, 0.1) : 'rgba(45,43,46,0.6)';
+    ctx.fill();
+    ctx.strokeStyle = isHover ? hexToRGBA(b.color, 0.5) : 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = isHover ? 1.5 : 1;
+    ctx.stroke();
+
+    ctx.font = `${Math.min(22, b.w * 0.18)}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(b.icon, b.cx, b.cy - 10);
+
+    ctx.font = `500 ${Math.min(11, b.w * 0.09)}px Oswald`;
+    ctx.fillStyle = isHover ? b.color : '#F2F2F3';
+    ctx.fillText(b.label, b.cx, b.cy + 12);
+
+    // Down arrow from substrate
+    ctx.font = '10px sans-serif';
+    ctx.fillStyle = hexToRGBA(b.color, 0.4);
+    ctx.fillText('▼', b.cx, b.y + b.h + 10);
+
+    hitBoxes.push({ ...b, type: 'output' });
+  });
+}
+
+function drawPrimitives(boxes) {
+  boxes.forEach(b => {
+    const isHover = hoverItem && hoverItem.name === b.name;
+    const r = 6;
+
+    roundRect(b.x, b.y, b.w, b.h, r);
+    ctx.fillStyle = hexToRGBA(b.color, isHover ? 0.2 : 0.1);
+    ctx.fill();
+    ctx.strokeStyle = hexToRGBA(b.color, isHover ? 0.6 : 0.35);
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.font = '600 11px Oswald';
+    ctx.fillStyle = b.color;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(b.name, b.cx, b.cy);
+
+    hitBoxes.push({ ...b, id: b.name, label: b.name, sub: 'Charlotte Primitive', type: 'primitive' });
+  });
+}
+
+function drawEngines(boxes) {
+  boxes.forEach(e => {
+    ctx.font = '400 10px Oswald';
+    ctx.fillStyle = 'rgba(242,242,243,0.3)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    // Spinning gear indicator
+    const gearAngle = animT * 0.5;
+    ctx.save();
+    ctx.translate(e.cx - 50, e.cy);
+    ctx.rotate(gearAngle);
+    ctx.font = '12px sans-serif';
+    ctx.fillStyle = 'rgba(170,102,224,0.3)';
+    ctx.fillText('⚙', 0, 0);
+    ctx.restore();
+
+    ctx.font = '500 10px Oswald';
+    ctx.fillStyle = 'rgba(242,242,243,0.4)';
+    ctx.textAlign = 'center';
+    ctx.fillText(e.name, e.cx, e.cy);
+  });
+}
+
+function drawFlowArrows(layout) {
+  // Arrow labels
+  const { subBox } = layout;
+
+  ctx.font = '400 10px Oswald';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(242,242,243,0.2)';
+  ctx.fillText('SIGNALS IN', subBox.x - 30, subBox.y + subBox.h / 2);
+  ctx.save();
+  ctx.translate(subBox.x + subBox.w + 30, subBox.y + subBox.h / 2);
+  ctx.fillText('INTELLIGENCE OUT', 0, 0);
+  ctx.restore();
+}
+
+// ============================================================
+// INTERACTION
+// ============================================================
+const tooltip = document.getElementById('tooltip');
+
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  hoverItem = null;
+  canvas.style.cursor = 'default';
+
+  for (const b of hitBoxes) {
+    if (b.x !== undefined && mx >= b.x && mx <= b.x + b.w && my >= b.y && my <= b.y + b.h) {
+      hoverItem = b;
+      canvas.style.cursor = 'pointer';
+      break;
+    }
+  }
+
+  if (hoverItem && hoverItem.desc) {
+    document.getElementById('ttTitle').textContent = hoverItem.label || hoverItem.name;
+    document.getElementById('ttTitle').style.color = hoverItem.color || '#F2F2F3';
+    document.getElementById('ttSub').textContent = hoverItem.sub || '';
+    document.getElementById('ttDesc').textContent = hoverItem.desc;
+
+    let tx = e.clientX + 16;
+    let ty = e.clientY + 16;
+    if (tx + 280 > W) tx = e.clientX - 296;
+    if (ty + 120 > H) ty = e.clientY - 120;
+
+    tooltip.style.left = tx + 'px';
+    tooltip.style.top = ty + 'px';
+    tooltip.classList.add('visible');
+  } else {
+    tooltip.classList.remove('visible');
+  }
+});
+
+canvas.addEventListener('mouseleave', () => {
+  hoverItem = null;
+  tooltip.classList.remove('visible');
+});
+
+// ============================================================
+// HELPERS
+// ============================================================
+function roundRect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+}
+
+function hexToRGBA(hex, alpha) {
+  const r = parseInt(hex.slice(1,3), 16);
+  const g = parseInt(hex.slice(3,5), 16);
+  const b = parseInt(hex.slice(5,7), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('resize', resize);
+resize();
+draw();
+</script>
+</body>
+</html>
